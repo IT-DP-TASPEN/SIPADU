@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/panduan/sso-ringkas', [SsoGuideController::class, 'concise'])->name('docs.sso.concise.html');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/users/export', [UserManagementController::class, 'export'])->name('users.export');
     Route::resource('portal-applications', PortalApplicationController::class)->except('show');
     Route::resource('users', UserManagementController::class)->except('show', 'destroy');
 });

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -44,6 +46,23 @@ class UserManagementController extends Controller
                 'office_type' => 'head_office',
             ]),
             'canManageAdminFlag' => true,
+        ]);
+    }
+
+    public function export(): Response
+    {
+        $users = User::query()
+            ->orderBy('name')
+            ->get();
+
+        $content = view('users.export', [
+            'users' => $users,
+            'generatedAt' => now(),
+        ])->render();
+
+        return response($content, 200, [
+            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="sipadu-users-export.xls"',
         ]);
     }
 

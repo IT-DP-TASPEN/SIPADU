@@ -469,6 +469,31 @@ class PortalAccessTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_admin_can_export_users_as_excel_friendly_file(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $managedUser = User::factory()->create([
+            'name' => 'Ferrian Muhammad Fatichin',
+            'employee_id' => '2907997',
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('users.export'))
+            ->assertOk()
+            ->assertHeader('content-type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->assertSee('Daftar User SIPADU')
+            ->assertSee($managedUser->employee_id);
+    }
+
+    public function test_non_admin_user_cannot_export_users(): void
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+
+        $this->actingAs($user)
+            ->get(route('users.export'))
+            ->assertForbidden();
+    }
+
     public function test_admin_can_view_dashboard_monitoring_page(): void
     {
         $admin = User::factory()->create(['is_admin' => true]);
