@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panduan Implementasi SSO SIPADU</title>
+    <style>
+        :root {
+            --green-900: #0d2418;
+            --green-800: #163c26;
+            --green-700: #195d37;
+            --green-600: #1e7442;
+            --green-500: #289353;
+            --green-200: #b3e4c2;
+            --green-100: #d8f2e0;
+            --text: #1b2b21;
+            --muted: #5b6c62;
+            --line: #dbe7df;
+            --bg: #f7faf8;
+            --card: #ffffff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.65;
+            font-size: 14px;
+        }
+
+        .page {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 36px 40px 56px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--green-900), var(--green-700));
+            color: #fff;
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--green-100);
+        }
+
+        h1 {
+            margin: 14px 0 12px;
+            font-size: 32px;
+            line-height: 1.15;
+        }
+
+        h2 {
+            margin: 32px 0 10px;
+            font-size: 22px;
+            color: var(--green-800);
+            page-break-after: avoid;
+        }
+
+        h3 {
+            margin: 22px 0 8px;
+            font-size: 17px;
+            color: var(--green-700);
+            page-break-after: avoid;
+        }
+
+        p { margin: 0 0 12px; }
+        ul, ol { margin: 8px 0 14px 22px; }
+        li { margin-bottom: 6px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin: 20px 0 8px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .card strong {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--green-800);
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 22px 24px;
+            margin-bottom: 18px;
+        }
+
+        .note, .warning {
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin: 14px 0;
+        }
+
+        .note {
+            background: #eef8f1;
+            border: 1px solid #cfe8d7;
+        }
+
+        .warning {
+            background: #fff7ea;
+            border: 1px solid #f0ddaf;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0 18px;
+        }
+
+        th, td {
+            border: 1px solid var(--line);
+            padding: 10px 12px;
+            vertical-align: top;
+            text-align: left;
+        }
+
+        th {
+            background: #eef6f1;
+            color: var(--green-800);
+            font-weight: 700;
+        }
+
+        code, pre {
+            font-family: Consolas, "Courier New", monospace;
+        }
+
+        pre {
+            margin: 10px 0 16px;
+            background: #0f1914;
+            color: #ebfff1;
+            padding: 14px 16px;
+            border-radius: 16px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .small {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            .page {
+                max-width: none;
+                padding: 18px 20px 28px;
+            }
+
+            .section, .card, .hero {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="hero">
+            <div class="eyebrow">SIPADU SSO Guide</div>
+            <h1>Panduan Implementasi SSO SIPADU untuk Aplikasi Surrounding</h1>
+            <p>Dokumen ini menjadi standar implementasi untuk tim programmer aplikasi internal Bank DP Taspen agar integrasi SSO berjalan konsisten, aman, dan mudah diaudit.</p>
+            <p class="small">Dokumen kerja internal • Versi 1.0.0 • Tanggal 8 April 2026</p>
+        </section>
+
+        <section class="section">
+            <h2>1. Tujuan Dokumen</h2>
+            <p>Panduan ini dipakai sebagai juknis implementasi SSO dari SIPADU ke aplikasi surrounding. Setiap tim aplikasi mengikuti pola yang sama agar integrasi tidak berbeda-beda antar sistem.</p>
+
+            <div class="grid">
+                <div class="card">
+                    <strong>Tujuan Utama</strong>
+                    User login sekali di SIPADU lalu dapat membuka aplikasi surrounding tanpa memasukkan password lagi.
+                </div>
+                <div class="card">
+                    <strong>Identitas Bersama</strong>
+                    Kunci identitas antar aplikasi adalah <code>employee_id</code>.
+                </div>
+                <div class="card">
+                    <strong>Kontrol Lokal</strong>
+                    Role dan hak akses tetap dikelola oleh aplikasi masing-masing.
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. Prinsip Arsitektur</h2>
+            <ul>
+                <li>SIPADU berperan sebagai portal login pusat dan penerbit identitas.</li>
+                <li>Aplikasi surrounding berperan sebagai penerima token SSO dan pembuat session lokal.</li>
+                <li>SSO hanya mengotentikasi identitas user, bukan menggantikan mekanisme role aplikasi.</li>
+                <li>Semua aplikasi yang ingin menerima SSO harus melakukan penyesuaian integrasi.</li>
+            </ul>
+
+            <div class="note">
+                <strong>Catatan penting:</strong> Aplikasi kritikal seperti core banking dapat tetap memakai mode <em>launch only</em> dan login mandiri. Dokumen ini fokus untuk aplikasi surrounding yang menerima SSO.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. Standar Data User</h2>
+            <p>Setiap aplikasi surrounding minimal harus memiliki data berikut pada tabel user:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Status</th>
+                        <th>Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>employee_id</code></td>
+                        <td>Wajib</td>
+                        <td>Primary key identitas antar aplikasi. Harus sama persis dengan SIPADU.</td>
+                    </tr>
+                    <tr>
+                        <td><code>name</code></td>
+                        <td>Wajib</td>
+                        <td>Nama display user di aplikasi.</td>
+                    </tr>
+                    <tr>
+                        <td><code>email</code></td>
+                        <td>Wajib</td>
+                        <td>Data pendukung identitas dan komunikasi sistem.</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_active</code></td>
+                        <td>Wajib</td>
+                        <td>Penanda user masih boleh login ke aplikasi.</td>
+                    </tr>
+                    <tr>
+                        <td><code>last_login_at</code></td>
+                        <td>Disarankan</td>
+                        <td>Audit login terakhir.</td>
+                    </tr>
+                    <tr>
+                        <td><code>last_sso_login_at</code></td>
+                        <td>Disarankan</td>
+                        <td>Audit khusus login melalui SIPADU.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning">
+                <strong>Wajib diperhatikan:</strong> jika <code>employee_id</code> menggunakan leading zero, nilainya tidak boleh berubah. Contoh <code>0075019</code> tidak boleh menjadi <code>75019</code>.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. Checklist Persiapan Aplikasi Surrounding</h2>
+            <ol>
+                <li>Tambahkan kolom <code>employee_id</code> pada tabel user jika belum ada.</li>
+                <li>Pastikan seluruh user existing sudah diisi <code>employee_id</code> yang valid.</li>
+                <li>Tambahkan endpoint penerima SSO, misalnya <code>/sso/login</code>.</li>
+                <li>Tambahkan service validasi token.</li>
+                <li>Tambahkan konfigurasi issuer, audience, dan shared secret di environment aplikasi.</li>
+                <li>Tambahkan log audit login SSO.</li>
+                <li>Uji login sukses, expired token, wrong audience, wrong signature, dan user tidak ditemukan.</li>
+            </ol>
+        </section>
+
+        <section class="section">
+            <h2>5. Perubahan Database</h2>
+            <h3>5.1 Migration User</h3>
+<pre>&lt;?php
+
+Schema::table('users', function (Blueprint $table) {
+    $table->string('employee_id')->nullable()->unique()->after('id');
+    $table->boolean('is_active')->default(true)->after('email');
+    $table->timestamp('last_sso_login_at')->nullable()->after('last_login_at');
+});</pre>
+
+            <h3>5.2 Tabel Audit Token Terpakai</h3>
+            <p>Untuk mencegah replay token, disarankan menambahkan tabel yang menyimpan <code>jti</code> token yang sudah dipakai.</p>
+<pre>&lt;?php
+
+Schema::create('used_sso_tokens', function (Blueprint $table) {
+    $table->id();
+    $table->uuid('token_jti')->unique();
+    $table->string('employee_id');
+    $table->timestamp('used_at');
+    $table->timestamps();
+});</pre>
+        </section>
+
+        <section class="section">
+            <h2>6. Konfigurasi Environment</h2>
+            <p>Tambahkan konfigurasi berikut pada file <code>.env</code> aplikasi surrounding:</p>
+<pre>SSO_ENABLED=true
+SSO_ISSUER=sipadu
+SSO_AUDIENCE=dmtl-audit
+SSO_SHARED_SECRET=isi_secret_per_aplikasi
+SSO_LOGIN_ROUTE=/sso/login</pre>
+
+            <p>Tambahkan juga pada file config aplikasi, misalnya <code>config/services.php</code>:</p>
+<pre>'sso' =&gt; [
+    'enabled' =&gt; env('SSO_ENABLED', false),
+    'issuer' =&gt; env('SSO_ISSUER', 'sipadu'),
+    'audience' =&gt; env('SSO_AUDIENCE'),
+    'shared_secret' =&gt; env('SSO_SHARED_SECRET'),
+],</pre>
+        </section>
+
+        <section class="section">
+            <h2>7. Endpoint Penerima SSO</h2>
+            <p>Tambahkan route berikut:</p>
+<pre>Route::get('/sso/login', [SsoLoginController::class, 'store'])
+    -&gt;name('sso.login');</pre>
+
+            <p>Endpoint ini bertugas untuk:</p>
+            <ul>
+                <li>menerima parameter <code>sso_token</code> dari SIPADU,</li>
+                <li>memvalidasi token,</li>
+                <li>mencocokkan user berdasarkan <code>employee_id</code>,</li>
+                <li>membuat session login Laravel,</li>
+                <li>mencatat audit log login SSO.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>8. Format Payload Token</h2>
+            <p>Payload minimal yang perlu dikirim oleh SIPADU:</p>
+<pre>{
+  "iss": "sipadu",
+  "aud": "dmtl-audit",
+  "sub": "2907997",
+  "iat": 1770000000,
+  "exp": 1770000060,
+  "jti": "uuid-token",
+  "user": {
+    "employee_id": "2907997",
+    "email": "ferrianmfatichin@gmail.com",
+    "name": "Ferrian Muhammad Fatichin"
+  }
+}</pre>
+
+            <p>Arti field:</p>
+            <ul>
+                <li><code>iss</code>: penerbit token, harus SIPADU.</li>
+                <li><code>aud</code>: nama aplikasi tujuan.</li>
+                <li><code>sub</code>: subject atau user utama, umumnya sama dengan <code>employee_id</code>.</li>
+                <li><code>iat</code>: waktu token dibuat.</li>
+                <li><code>exp</code>: waktu token kedaluwarsa.</li>
+                <li><code>jti</code>: ID token unik untuk replay protection.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>9. Validasi Keamanan Token</h2>
+            <p>Aplikasi surrounding wajib melakukan validasi berikut sebelum login user:</p>
+            <ol>
+                <li>Signature token valid.</li>
+                <li><code>iss</code> sama dengan issuer SIPADU.</li>
+                <li><code>aud</code> sama dengan aplikasi penerima.</li>
+                <li><code>exp</code> belum lewat.</li>
+                <li><code>jti</code> belum pernah dipakai.</li>
+                <li>User dengan <code>employee_id</code> ditemukan dan masih aktif.</li>
+            </ol>
+
+            <div class="warning">
+                <strong>Jangan langsung login user tanpa validasi token.</strong> Semua poin di atas wajib dijalankan, terutama signature, audience, dan expiration.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>10. Contoh Service Validasi Token</h2>
+<pre>&lt;?php
+
+namespace App\Services;
+
+use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
+
+class SsoTokenService
+{
+    public function decode(string $token): array
+    {
+        [$encodedPayload, $signature] = explode('.', $token, 2);
+
+        $expectedSignature = hash_hmac(
+            'sha256',
+            $encodedPayload,
+            Config::get('services.sso.shared_secret')
+        );
+
+        if (! hash_equals($expectedSignature, $signature)) {
+            abort(403, 'Signature token tidak valid.');
+        }
+
+        $payload = json_decode(base64_decode($encodedPayload), true);
+
+        if (! is_array($payload)) {
+            abort(403, 'Payload token tidak valid.');
+        }
+
+        if (Arr::get($payload, 'iss') !== Config::get('services.sso.issuer')) {
+            abort(403, 'Issuer token tidak valid.');
+        }
+
+        if (Arr::get($payload, 'aud') !== Config::get('services.sso.audience')) {
+            abort(403, 'Audience token tidak valid.');
+        }
+
+        if (Carbon::createFromTimestamp(Arr::get($payload, 'exp'))->isPast()) {
+            abort(403, 'Token sudah expired.');
+        }
+
+        return $payload;
+    }
+}</pre>
+        </section>
+
+        <section class="section">
+            <h2>11. Contoh Controller Login SSO</h2>
+<pre>&lt;?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Services\SsoTokenService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class SsoLoginController extends Controller
+{
+    public function store(Request $request, SsoTokenService $ssoTokenService): RedirectResponse
+    {
+        abort_unless(config('services.sso.enabled'), 404);
+
+        $token = (string) $request->query('sso_token');
+        abort_if($token === '', 403, 'Token SSO tidak ditemukan.');
+
+        $payload = $ssoTokenService->decode($token);
+        $employeeId = data_get($payload, 'user.employee_id');
+
+        $user = User::query()
+            ->where('employee_id', $employeeId)
+            ->where('is_active', true)
+            ->first();
+
+        abort_if(! $user, 403, 'User tidak terdaftar atau tidak aktif.');
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        $user->forceFill([
+            'last_login_at' => now(),
+            'last_sso_login_at' => now(),
+        ])->save();
+
+        return redirect()->intended('/dashboard');
+    }
+}</pre>
+        </section>
+
+        <section class="section">
+            <h2>12. Replay Protection</h2>
+            <p>Replay protection mencegah satu token yang sama dipakai berulang kali. Mekanisme minimal:</p>
+            <ol>
+                <li>Ambil nilai <code>jti</code> dari token.</li>
+                <li>Cek apakah <code>jti</code> sudah pernah tersimpan pada tabel <code>used_sso_tokens</code>.</li>
+                <li>Jika sudah ada, tolak login.</li>
+                <li>Jika belum ada, simpan setelah login berhasil.</li>
+            </ol>
+
+<pre>$alreadyUsed = UsedSsoToken::where('token_jti', $payload['jti'])->exists();
+
+abort_if($alreadyUsed, 403, 'Token sudah pernah digunakan.');
+
+UsedSsoToken::create([
+    'token_jti' => $payload['jti'],
+    'employee_id' => $payload['user']['employee_id'],
+    'used_at' => now(),
+]);</pre>
+        </section>
+
+        <section class="section">
+            <h2>13. Audit Log</h2>
+            <p>Selain replay table, disarankan juga ada audit log untuk pelacakan login SSO.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>user_id</code></td>
+                        <td>ID user lokal yang berhasil login.</td>
+                    </tr>
+                    <tr>
+                        <td><code>employee_id</code></td>
+                        <td>ID karyawan dari payload.</td>
+                    </tr>
+                    <tr>
+                        <td><code>token_jti</code></td>
+                        <td>ID token unik untuk korelasi audit.</td>
+                    </tr>
+                    <tr>
+                        <td><code>logged_in_at</code></td>
+                        <td>Waktu login berhasil.</td>
+                    </tr>
+                    <tr>
+                        <td><code>ip_address</code></td>
+                        <td>Alamat IP user saat login.</td>
+                    </tr>
+                    <tr>
+                        <td><code>user_agent</code></td>
+                        <td>Informasi browser/perangkat.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>14. Role dan Hak Akses</h2>
+            <p>SSO hanya membuktikan bahwa user tersebut valid dari SIPADU. Hak akses di aplikasi surrounding tetap harus mengikuti role lokal.</p>
+            <ul>
+                <li>SSO tidak otomatis menjadikan user sebagai admin.</li>
+                <li>Role seperti <em>auditor</em>, <em>approver</em>, <em>reviewer</em>, atau <em>admin</em> tetap disimpan pada aplikasi lokal.</li>
+                <li>Jika user berhasil login via SSO tetapi tidak punya role lokal, maka akses aplikasi harus dibatasi sesuai kebijakan sistem.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>15. Strategi Implementasi Tim</h2>
+            <h3>15.1 Pembagian Tanggung Jawab</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tim</th>
+                        <th>Tanggung Jawab</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tim SIPADU</td>
+                        <td>Menyiapkan payload token, konfigurasi aplikasi, shared secret, dan URL launch SSO.</td>
+                    </tr>
+                    <tr>
+                        <td>Tim Aplikasi Surrounding</td>
+                        <td>Menambah <code>employee_id</code>, endpoint SSO, validator token, auto-login, dan audit log.</td>
+                    </tr>
+                    <tr>
+                        <td>Tim QA</td>
+                        <td>Menguji happy path, invalid signature, expired token, wrong audience, replay token, dan user tidak ditemukan.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>15.2 Urutan Rollout</h3>
+            <ol>
+                <li>Pilih satu aplikasi Laravel sebagai pilot.</li>
+                <li>Implementasikan seluruh checklist dokumen ini.</li>
+                <li>Lakukan testing bersama SIPADU dan QA.</li>
+                <li>Setelah pola stabil, jadikan sebagai template untuk aplikasi lain.</li>
+                <li>Rollout bertahap ke seluruh aplikasi surrounding.</li>
+            </ol>
+        </section>
+
+        <section class="section">
+            <h2>16. Checklist Uji Coba</h2>
+            <ol>
+                <li>User valid dengan <code>employee_id</code> yang cocok dapat login otomatis.</li>
+                <li>User tidak ditemukan ditolak.</li>
+                <li>User nonaktif ditolak.</li>
+                <li>Token expired ditolak.</li>
+                <li>Signature salah ditolak.</li>
+                <li>Audience salah ditolak.</li>
+                <li>Issuer salah ditolak.</li>
+                <li>Token replay ditolak.</li>
+                <li>Audit log tercatat setelah login berhasil.</li>
+                <li>Role lokal tetap berjalan normal setelah login via SSO.</li>
+            </ol>
+        </section>
+
+        <section class="section">
+            <h2>17. Kesimpulan</h2>
+            <p>Implementasi SSO SIPADU di aplikasi surrounding pada dasarnya memerlukan empat fondasi: <code>employee_id</code> sebagai identitas bersama, endpoint penerima token, validasi keamanan token, dan pembuatan session login lokal.</p>
+            <p>Jika semua tim mengikuti standar yang sama, rollout ke banyak aplikasi akan jauh lebih cepat, aman, dan mudah diaudit.</p>
+        </section>
+    </div>
+</body>
+</html>

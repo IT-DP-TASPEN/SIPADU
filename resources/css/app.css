@@ -1,0 +1,71 @@
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
+    --color-brand-50: #effaf3;
+    --color-brand-100: #d8f2e0;
+    --color-brand-200: #b3e4c2;
+    --color-brand-300: #82d09d;
+    --color-brand-400: #4eb572;
+    --color-brand-500: #289353;
+    --color-brand-600: #1e7442;
+    --color-brand-700: #195d37;
+    --color-brand-800: #17492d;
+    --color-brand-900: #143c26;
+    --color-ink: #183228;
+    --color-mist: #f4f8f4;
+    --shadow-soft: 0 20px 45px -28px rgba(22, 60, 38, 0.28);
+    --shadow-card: 0 18px 32px -24px rgba(25, 93, 55, 0.25);
+}
+
+@layer base {
+    body {
+        font-family: var(--font-sans);
+        background:
+            radial-gradient(circle at top left, rgba(216, 242, 224, 0.95), transparent 34%),
+            radial-gradient(circle at top right, rgba(130, 208, 157, 0.22), transparent 28%),
+            linear-gradient(180deg, #f8fbf8 0%, #eef5ef 100%);
+        color: var(--color-ink);
+    }
+}
+
+@layer components {
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .app-card,
+    .search-result {
+        transition:
+            transform 180ms ease,
+            box-shadow 180ms ease,
+            border-color 180ms ease,
+            background-color 180ms ease;
+    }
+
+    .app-card:hover,
+    .search-result:hover {
+        transform: translateY(-3px);
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(14px);
+        animation: reveal-up 420ms ease forwards;
+    }
+}
+
+@keyframes reveal-up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

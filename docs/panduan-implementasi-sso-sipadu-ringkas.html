@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checklist Implementasi SSO SIPADU</title>
+    <style>
+        :root {
+            --green-900: #10261a;
+            --green-700: #1d5f39;
+            --green-500: #2b8a52;
+            --green-100: #e8f4ec;
+            --text: #1d2d24;
+            --muted: #637369;
+            --line: #dbe7df;
+            --bg: #f7faf8;
+            --card: #ffffff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .page {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 32px 36px 48px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--green-900), var(--green-700));
+            color: white;
+            padding: 28px 30px;
+            border-radius: 22px;
+            margin-bottom: 22px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.18);
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 14px 0 10px;
+            font-size: 30px;
+            line-height: 1.15;
+        }
+
+        h2 {
+            margin: 0 0 10px;
+            color: var(--green-700);
+            font-size: 20px;
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            color: var(--green-700);
+            font-size: 16px;
+        }
+
+        .section {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px 22px;
+            margin-bottom: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .task {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 14px 16px;
+            background: #fcfefd;
+        }
+
+        .task p:last-child {
+            margin-bottom: 0;
+        }
+
+        ul {
+            margin: 8px 0 0 18px;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .todo {
+            list-style: none;
+            margin: 10px 0 0;
+            padding: 0;
+        }
+
+        .todo li {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 9px;
+        }
+
+        .box {
+            width: 16px;
+            height: 16px;
+            border: 1.6px solid var(--green-500);
+            border-radius: 4px;
+            margin-top: 2px;
+            flex: 0 0 16px;
+        }
+
+        .note {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: var(--green-100);
+            border: 1px solid #cfe3d6;
+        }
+
+        code, pre {
+            font-family: Consolas, "Courier New", monospace;
+        }
+
+        pre {
+            margin: 10px 0 0;
+            padding: 13px 14px;
+            border-radius: 14px;
+            background: #101915;
+            color: #eafff0;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .small {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media print {
+            .page {
+                max-width: none;
+                padding: 18px 20px 28px;
+            }
+
+            .section, .task, .hero {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="hero">
+            <div class="eyebrow">Quick Execution Guide</div>
+            <h1>Checklist Implementasi SSO SIPADU untuk Programmer</h1>
+            <p>Versi singkat ini dibuat agar tim bisa langsung eksekusi. Fokusnya task, to-do list, dan output yang harus selesai di tiap aplikasi surrounding.</p>
+            <p class="small">Dokumen internal • Ringkasan implementasi • 8 April 2026</p>
+        </section>
+
+        <section class="section">
+            <h2>1. Target Implementasi</h2>
+            <ul>
+                <li>User login di SIPADU, lalu masuk ke aplikasi surrounding tanpa input password lagi.</li>
+                <li>Pencocokan user dilakukan dengan <code>employee_id</code>.</li>
+                <li>Role aplikasi tetap memakai data lokal aplikasi masing-masing.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>2. Data Minimal yang Harus Ada</h2>
+            <div class="grid">
+                <div class="task">
+                    <h3>Di SIPADU</h3>
+                    <p><code>employee_id</code>, <code>name</code>, <code>email</code></p>
+                </div>
+                <div class="task">
+                    <h3>Di Aplikasi Surrounding</h3>
+                    <p><code>employee_id</code>, <code>name</code>, <code>email</code>, <code>is_active</code></p>
+                </div>
+            </div>
+            <div class="note">
+                <strong>Catatan:</strong> untuk matching user, gunakan <code>employee_id</code> sebagai kunci utama. Email dan nama hanya data pendukung.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. Task Step by Step</h2>
+
+            <div class="task">
+                <h3>Step 1. Tambah kolom <code>employee_id</code></h3>
+                <p>Tujuan: supaya user di aplikasi surrounding bisa dicocokkan dengan user SIPADU.</p>
+                <ul class="todo">
+                    <li><span class="box"></span><span>Tambah kolom <code>employee_id</code> di tabel <code>users</code>.</span></li>
+                    <li><span class="box"></span><span>Tambahkan unique index jika satu user satu ID karyawan.</span></li>
+                    <li><span class="box"></span><span>Isi data existing user dengan <code>employee_id</code> yang benar.</span></li>
+                </ul>
+            </div>
+
+            <div class="task" style="margin-top:14px;">
+                <h3>Step 2. Tambah konfigurasi SSO di aplikasi</h3>
+                <p>Tujuan: aplikasi tahu siapa issuer dan secret yang dipakai untuk validasi token.</p>
+                <ul class="todo">
+                    <li><span class="box"></span><span>Tambahkan <code>SSO_ENABLED</code> di <code>.env</code>.</span></li>
+                    <li><span class="box"></span><span>Tambahkan <code>SSO_ISSUER</code>, <code>SSO_AUDIENCE</code>, dan <code>SSO_SHARED_SECRET</code>.</span></li>
+                    <li><span class="box"></span><span>Mapping config ke <code>config/services.php</code> atau file config khusus.</span></li>
+                </ul>
+<pre>SSO_ENABLED=true
+SSO_ISSUER=sipadu
+SSO_AUDIENCE=dmtl-audit
+SSO_SHARED_SECRET=secret-aplikasi</pre>
+            </div>
+
+            <div class="task" style="margin-top:14px;">
+                <h3>Step 3. Buat route penerima SSO</h3>
+                <p>Tujuan: menyediakan endpoint yang akan dipanggil SIPADU saat user membuka aplikasi.</p>
+                <ul class="todo">
+                    <li><span class="box"></span><span>Tambahkan route <code>/sso/login</code>.</span></li>
+                    <li><span class="box"></span><span>Route menerima parameter <code>sso_token</code>.</span></li>
+                </ul>
+<pre>Route::get('/sso/login', [SsoLoginController::class, 'store'])
+    -&gt;name('sso.login');</pre>
+            </div>
+
+            <div class="task" style="margin-top:14px;">
+                <h3>Step 4. Buat service validasi token</h3>
+                <p>Tujuan: memastikan token hanya diterima jika valid dan memang berasal dari SIPADU.</p>
+                <ul class="todo">
+                    <li><span class="box"></span><span>Cek signature token.</span></li>
+                    <li><span class="box"></span><span>Cek <code>iss</code> harus SIPADU.</span></li>
+                    <li><span class="box"></span><span>Cek <code>aud</code> harus sesuai aplikasi.</span></li>
+                    <li><span class="box"></span><span>Cek token belum expired.</span></li>
+                </ul>
+<pre>&lt;?php
+
+namespace App\Services;
+
+use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
+
+class SsoTokenService
+{
+    public function decode(string $token): array
+    {
+        [$encodedPayload, $signature] = explode('.', $token, 2);
+
+        $expectedSignature = hash_hmac(
+            'sha256',
+            $encodedPayload,
+            config('services.sso.shared_secret')
+        );
+
+        if (! hash_equals($expectedSignature, $signature)) {
+            abort(403, 'Signature token tidak valid.');
+        }
+
+        $payload = json_decode(base64_decode($encodedPayload), true);
+
+        if (! is_array($payload)) {
+            abort(403, 'Payload token tidak valid.');
+        }
+
+        if (Arr::get($payload, 'iss') !== config('services.sso.issuer')) {
+            abort(403, 'Issuer token tidak valid.');
+        }
+
+        if (Arr::get($payload, 'aud') !== config('services.sso.audience')) {
+            abort(403, 'Audience token tidak valid.');
+        }
+
+        if (Carbon::createFromTimestamp(Arr::get($payload, 'exp'))->isPast()) {
+            abort(403, 'Token sudah expired.');
+        }
+
+        return $payload;
+    }
+}</pre>
+            </div>
+
+            <div class="task" style="margin-top:14px;">
+                <h3>Step 5. Buat controller login SSO</h3>
+                <p>Tujuan: setelah token valid, aplikasi login-kan user secara lokal.</p>
+                <ul class="todo">
+                    <li><span class="box"></span><span>Ambil <code>employee_id</code> dari token.</span></li>
+                    <li><span class="box"></span><span>Cari user lokal berdasarkan <code>employee_id</code>.</span></li>
+                    <li><span class="box"></span><span>Pastikan user aktif.</span></li>
+                    <li><span class="box"></span><span>Jalankan <code>Auth::login($user)</code>.</span></li>
+                    <li><span class="box"></span><span>Redirect ke halaman utama aplikasi.</span></li>
+                </ul>
+<pre>&lt;?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Services\SsoTokenService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class SsoLoginController extends Controller
+{
+    public function store(Request $request, SsoTokenService $ssoTokenService): RedirectResponse
+    {
+        abort_unless(config('services.sso.enabled'), 404);
+
+        $token = (string) $request->query('sso_token');
+        abort_if($token === '', 403, 'Token SSO tidak ditemukan.');
+
+        $payload = $ssoTokenService->decode($token);
+        $employeeId = data_get($payload, 'user.employee_id');
+
+        $user = User::query()
+            ->where('employee_id', $employeeId)
+            ->where('is_active', true)
+            ->first();
+
+        abort_if(! $user, 403, 'User tidak terdaftar atau tidak aktif.');
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->intended('/dashboard');
+    }
+}</pre>
+                <div class="note">
+                    <strong>Catatan untuk Filament:</strong> jika aplikasi memakai panel Filament, redirect akhir biasanya diarahkan ke <code>/admin</code> atau URL panel yang dipakai. Contoh: <code>return redirect()-&gt;intended('/admin');</code>
+                </div>
+            </div>
+
+            <div class="task" style="margin-top:14px;">
+                <h3>Step 6. Tambah replay protection</h3>
+                <p>Tujuan: token yang sama tidak bisa dipakai dua kali.</p>
+                <ul class="todo">
+                    <li><span class="box"></span><span>Simpan nilai <code>jti</code> token yang sudah dipakai.</span></li>
+                    <li><span class="box"></span><span>Jika <code>jti</code> sudah ada, tolak login.</span></li>
+                </ul>
+            </div>
+
+            <div class="task" style="margin-top:14px;">
+                <h3>Step 7. Tambah audit log</h3>
+                <p>Tujuan: semua login dari SIPADU bisa ditelusuri.</p>
+                <ul class="todo">
+                    <li><span class="box"></span><span>Simpan <code>user_id</code> atau <code>employee_id</code>.</span></li>
+                    <li><span class="box"></span><span>Simpan <code>token_jti</code>.</span></li>
+                    <li><span class="box"></span><span>Simpan waktu login, IP address, dan user agent.</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. To-Do Checklist Final per Aplikasi</h2>
+            <ul class="todo">
+                <li><span class="box"></span><span>Kolom <code>employee_id</code> sudah ada di tabel user.</span></li>
+                <li><span class="box"></span><span>Data user existing sudah diisi <code>employee_id</code>.</span></li>
+                <li><span class="box"></span><span>Config SSO di <code>.env</code> sudah tersedia.</span></li>
+                <li><span class="box"></span><span>Route <code>/sso/login</code> sudah aktif.</span></li>
+                <li><span class="box"></span><span>Service validasi token sudah dibuat.</span></li>
+                <li><span class="box"></span><span>Controller auto-login sudah dibuat.</span></li>
+                <li><span class="box"></span><span>Matching user memakai <code>employee_id</code>.</span></li>
+                <li><span class="box"></span><span>Replay protection dengan <code>jti</code> sudah aktif.</span></li>
+                <li><span class="box"></span><span>Audit log login SSO sudah tercatat.</span></li>
+                <li><span class="box"></span><span>Testing happy path dan invalid token sudah selesai.</span></li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>5. Testing yang Wajib Dilakukan</h2>
+            <div class="grid">
+                <div class="task">
+                    <h3>Happy Path</h3>
+                    <ul>
+                        <li>User valid bisa login otomatis.</li>
+                        <li>User masuk ke halaman aplikasi setelah SSO.</li>
+                    </ul>
+                </div>
+                <div class="task">
+                    <h3>Negative Test</h3>
+                    <ul>
+                        <li>User tidak ditemukan harus ditolak.</li>
+                        <li>Token expired harus ditolak.</li>
+                        <li>Audience salah harus ditolak.</li>
+                        <li>Signature salah harus ditolak.</li>
+                        <li>Token replay harus ditolak.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>6. Pembagian Task Tim</h2>
+            <div class="grid">
+                <div class="task">
+                    <h3>Tim SIPADU</h3>
+                    <ul>
+                        <li>Siapkan launch URL aplikasi.</li>
+                        <li>Siapkan audience aplikasi.</li>
+                        <li>Siapkan shared secret per aplikasi.</li>
+                    </ul>
+                </div>
+                <div class="task">
+                    <h3>Tim Surrounding App</h3>
+                    <ul>
+                        <li>Update tabel user.</li>
+                        <li>Buat endpoint SSO.</li>
+                        <li>Buat validator token dan auto-login.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="note">
+                <strong>Rekomendasi eksekusi:</strong> pilih satu aplikasi pilot dulu, jadikan template, lalu copy pola yang sama ke aplikasi surrounding berikutnya.
+            </div>
+        </section>
+    </div>
+</body>
+</html>
