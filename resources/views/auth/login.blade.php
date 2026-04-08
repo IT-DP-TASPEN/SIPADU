@@ -41,7 +41,7 @@
 
                         <div>
                             <label for="login" class="mb-2 block text-sm font-semibold text-slate-200">Username atau Email</label>
-                            <input id="login" name="login" type="text" value="{{ old('login', '2907997_Ferrian') }}" required autofocus class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm placeholder:text-slate-500 focus:border-brand-500 focus:ring-brand-500/30">
+                            <input id="login" name="login" type="text" value="{{ old('login') }}" required autofocus class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm placeholder:text-slate-500 focus:border-brand-500 focus:ring-brand-500/30">
                             @error('login')
                                 <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
                             @enderror
@@ -52,7 +52,7 @@
                                 <label for="password" class="block text-sm font-semibold text-slate-200">Password</label>
                                 {{-- <span class="text-xs text-slate-500">Contoh: DPT@SP3n</span> --}}
                             </div>
-                            <input id="password" name="password" type="password" value="DPT@SP3n" required class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm focus:border-brand-500 focus:ring-brand-500/30">
+                            <input id="password" name="password" type="password" required class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm focus:border-brand-500 focus:ring-brand-500/30">
                         </div>
 
                         <label class="flex items-center gap-3 text-sm text-slate-400">
