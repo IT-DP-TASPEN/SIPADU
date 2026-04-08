@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://bankdptaspen.co.id/wp-content/uploads/2024/01/Logo-Bank-DP-Taspen-Version-New.png" alt="Bank DP Taspen" width="260">
+</p>
+
 # SIPADU
 
 SIPADU adalah portal terpusat Bank DP Taspen untuk mencari, membuka, dan memonitor akses ke aplikasi internal.
