@@ -19,6 +19,9 @@
                     <a href="{{ route('dashboard.index') }}" class="hidden items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white md:inline-flex">
                         Dashboard
                     </a>
+                    <a href="{{ route('sso-logs.index') }}" class="hidden items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white md:inline-flex">
+                        Log SSO
+                    </a>
                     <a href="{{ route('users.index') }}" class="hidden items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white md:inline-flex">
                         Kelola user
                     </a>
@@ -47,6 +50,9 @@
                             @if ($user->isAdmin())
                                 <a href="{{ route('dashboard.index') }}" class="flex items-center rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/5 hover:text-white md:hidden">
                                     Dashboard monitoring
+                                </a>
+                                <a href="{{ route('sso-logs.index') }}" class="flex items-center rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/5 hover:text-white md:hidden">
+                                    Log SSO
                                 </a>
                             @endif
                             <a href="{{ route('profile.edit') }}" class="flex items-center rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/5 hover:text-white">

@@ -35,12 +35,18 @@ class SsoLaunchController extends Controller
         SsoLaunchLog::query()->create([
             'user_id' => $request->user()->id,
             'portal_application_id' => $application->id,
+            'application_name_snapshot' => $application->name,
+            'application_slug_snapshot' => $application->slug,
+            'launch_mode_snapshot' => $application->launch_mode,
+            'issuer_snapshot' => $application->usesSso() ? config('sso.issuer') : null,
+            'audience_snapshot' => $application->usesSso() ? ($application->sso_audience ?: $application->slug) : null,
             'target_url' => $targetUrl,
             'token_id' => $tokenId,
             'token_expires_at' => $expiresAt,
             'launched_at' => now(),
             'ip_address' => $request->ip(),
             'user_agent' => (string) $request->userAgent(),
+            'payload_snapshot' => $application->usesSso() ? ($issued['payload'] ?? null) : null,
         ]);
 
         return redirect()->away($targetUrl);

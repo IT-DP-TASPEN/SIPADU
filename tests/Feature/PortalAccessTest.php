@@ -595,6 +595,104 @@ class PortalAccessTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_admin_can_view_sso_logs_index(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $application = PortalApplication::factory()->create([
+            'name' => 'DMTL Audit',
+            'slug' => 'dmtl-audit',
+            'launch_mode' => 'sso',
+            'sso_audience' => 'dmtl-audit',
+        ]);
+
+        SsoLaunchLog::query()->create([
+            'user_id' => $admin->id,
+            'portal_application_id' => $application->id,
+            'application_name_snapshot' => 'DMTL Audit',
+            'application_slug_snapshot' => 'dmtl-audit',
+            'launch_mode_snapshot' => 'sso',
+            'issuer_snapshot' => 'http://sipadu.test',
+            'audience_snapshot' => 'dmtl-audit',
+            'target_url' => 'http://audit.test/sso/login?sso_token=abc',
+            'token_id' => 'ccdd8466-a0f0-41cc-8b70-9c7d9dbb4561',
+            'token_expires_at' => now()->addMinutes(2),
+            'launched_at' => now(),
+            'ip_address' => '10.10.10.10',
+            'user_agent' => 'PHPUnit',
+            'payload_snapshot' => [
+                'iss' => 'http://sipadu.test',
+                'aud' => 'dmtl-audit',
+                'user' => [
+                    'employee_id' => $admin->employee_id,
+                    'name' => $admin->name,
+                    'email' => $admin->email,
+                ],
+            ],
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('sso-logs.index'))
+            ->assertOk()
+            ->assertSee('Log SSO SIPADU')
+            ->assertSee('DMTL Audit')
+            ->assertSee('Total Log')
+            ->assertSee('Audience: dmtl-audit');
+    }
+
+    public function test_admin_can_view_sso_log_detail(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $application = PortalApplication::factory()->create([
+            'name' => 'SIRAGA',
+            'slug' => 'sistem-rapat',
+            'launch_mode' => 'sso',
+            'sso_audience' => 'sistem-rapat',
+        ]);
+
+        $log = SsoLaunchLog::query()->create([
+            'user_id' => $admin->id,
+            'portal_application_id' => $application->id,
+            'application_name_snapshot' => 'SIRAGA',
+            'application_slug_snapshot' => 'sistem-rapat',
+            'launch_mode_snapshot' => 'sso',
+            'issuer_snapshot' => 'http://sipadu.test',
+            'audience_snapshot' => 'sistem-rapat',
+            'target_url' => 'http://siraga.test/sso/login?sso_token=abc',
+            'token_id' => '2aab1267-4b37-46c7-9886-e5405e93d883',
+            'token_expires_at' => now()->addMinutes(2),
+            'launched_at' => now(),
+            'ip_address' => '10.10.10.10',
+            'user_agent' => 'PHPUnit',
+            'payload_snapshot' => [
+                'iss' => 'http://sipadu.test',
+                'aud' => 'sistem-rapat',
+                'user' => [
+                    'employee_id' => $admin->employee_id,
+                    'username' => $admin->username,
+                    'name' => $admin->name,
+                    'email' => $admin->email,
+                ],
+            ],
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('sso-logs.show', $log))
+            ->assertOk()
+            ->assertSee('Payload snapshot')
+            ->assertSee('sistem-rapat')
+            ->assertSee($admin->employee_id)
+            ->assertSee('Issuer snapshot');
+    }
+
+    public function test_non_admin_user_cannot_access_sso_logs(): void
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+
+        $this->actingAs($user)
+            ->get(route('sso-logs.index'))
+            ->assertForbidden();
+    }
+
     public function test_admin_can_view_dynamic_sso_guide_with_application_configuration(): void
     {
         $admin = User::factory()->create(['is_admin' => true]);

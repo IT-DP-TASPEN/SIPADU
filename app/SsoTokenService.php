@@ -41,6 +41,7 @@ class SsoTokenService
             'token' => $this->encode($payload, $application->sso_shared_secret ?: (string) config('sso.shared_secret')),
             'token_id' => $tokenId,
             'expires_at' => $expiresAt,
+            'payload' => $payload,
         ];
     }
 

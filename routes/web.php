@@ -6,6 +6,7 @@ use App\Http\Controllers\PortalApplicationController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SsoGuideController;
+use App\Http\Controllers\SsoLogController;
 use App\Http\Controllers\SsoLaunchController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/panduan/sso-ringkas', [SsoGuideController::class, 'concise'])->name('docs.sso.concise.html');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/sso-logs', [SsoLogController::class, 'index'])->name('sso-logs.index');
+    Route::get('/sso-logs/{ssoLog}', [SsoLogController::class, 'show'])->name('sso-logs.show');
     Route::get('/users/export', [UserManagementController::class, 'export'])->name('users.export');
     Route::resource('portal-applications', PortalApplicationController::class)->except('show');
     Route::resource('users', UserManagementController::class)->except('show', 'destroy');

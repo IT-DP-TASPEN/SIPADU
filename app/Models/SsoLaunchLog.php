@@ -10,12 +10,18 @@ class SsoLaunchLog extends Model
     protected $fillable = [
         'user_id',
         'portal_application_id',
+        'application_name_snapshot',
+        'application_slug_snapshot',
+        'launch_mode_snapshot',
+        'issuer_snapshot',
+        'audience_snapshot',
         'target_url',
         'token_id',
         'token_expires_at',
         'launched_at',
         'ip_address',
         'user_agent',
+        'payload_snapshot',
     ];
 
     protected function casts(): array
@@ -23,6 +29,7 @@ class SsoLaunchLog extends Model
         return [
             'token_expires_at' => 'datetime',
             'launched_at' => 'datetime',
+            'payload_snapshot' => 'array',
         ];
     }
 
