@@ -8,7 +8,6 @@ SIPADU adalah portal terpusat Bank DP Taspen untuk mencari, membuka, dan memonit
 
 Portal ini dirancang sebagai:
 - search-first internal portal
-- SSO gateway untuk aplikasi surrounding
 - launcher untuk aplikasi yang tetap membutuhkan login mandiri
 - pusat monitoring dan audit akses aplikasi
 
@@ -17,7 +16,6 @@ Portal ini dirancang sebagai:
 - Login portal dengan `username` atau `email`
 - Search-first launcher untuk aplikasi internal
 - Mode aplikasi:
-  - `sso`
   - `launch_only`
 - Pengaturan akses aplikasi berdasarkan:
   - divisi
@@ -33,10 +31,6 @@ Portal ini dirancang sebagai:
 - CRUD aplikasi portal
 - CRUD user portal
 - Profil user
-- Panduan implementasi SSO:
-  - versi lengkap
-  - versi ringkas
-  - versi dinamis untuk admin
 
 ## Stack
 
@@ -55,25 +49,20 @@ Catatan:
 - `app/Http/Controllers`
   - `AuthController.php`
   - `PortalController.php`
-  - `SsoLaunchController.php`
   - `DashboardController.php`
   - `PortalApplicationController.php`
   - `UserManagementController.php`
   - `ProfileController.php`
-  - `SsoGuideController.php`
-- `app/SsoTokenService.php`
 - `app/Models`
   - `User.php`
   - `PortalApplication.php`
   - `PortalApplicationAccessRule.php`
-  - `SsoLaunchLog.php`
 - `resources/views`
   - `auth/login.blade.php`
   - `portal/index.blade.php`
   - `dashboard/index.blade.php`
   - `portal-applications/*`
   - `users/*`
-  - `docs/sso-ringkas.blade.php`
 - `database/seeders`
   - `UserSeeder.php`
   - `PortalApplicationSeeder.php`
@@ -143,9 +132,6 @@ Yang sudah tercakup:
 - hash password user saat ini
 - status admin
 - daftar aplikasi portal saat ini
-- mode `sso` / `launch_only`
-- audience SSO
-- shared secret SSO
 - rule akses aplikasi
 
 Untuk deploy environment baru:
@@ -162,52 +148,6 @@ Akun admin seeded:
 
 Hak admin diberikan lewat field `is_admin`.
 
-## Konsep SSO
-
-SIPADU menggunakan dua mode launch:
-
-### 1. `sso`
-
-Dipakai untuk aplikasi surrounding yang menerima login dari SIPADU.
-
-Saat user klik aplikasi:
-- SIPADU membuat `sso_token`
-- aplikasi tujuan memvalidasi token
-- aplikasi tujuan login-kan user lokal berdasarkan `employee_id`
-
-### 2. `launch_only`
-
-Dipakai untuk aplikasi yang tetap login sendiri.
-
-Saat user klik aplikasi:
-- SIPADU hanya membuka URL aplikasi
-- tidak ada handoff token login
-
-## Standar Integrasi Aplikasi Surrounding
-
-Setiap aplikasi surrounding minimal harus:
-- punya kolom `employee_id` di tabel user
-- punya endpoint penerima SSO, misalnya `/sso/login`
-- memvalidasi token dari SIPADU
-- mencocokkan user berdasarkan `employee_id`
-- membuat session login lokal
-
-Untuk panduan implementasi:
-- versi lengkap: `/panduan/sso`
-- versi lengkap PDF: `/panduan/sso/pdf`
-- versi ringkas dinamis admin: `/panduan/sso-ringkas`
-- versi ringkas PDF: `/panduan/sso-ringkas/pdf`
-
-Catatan keamanan:
-- halaman ringkas dinamis admin-only karena menampilkan shared secret aplikasi
-
-## Shared Secret Otomatis
-
-Untuk aplikasi mode `sso`:
-- `shared secret` akan di-generate otomatis saat aplikasi dibuat jika field dikosongkan
-- admin bisa regenerate secret dari form aplikasi
-- panduan dinamis admin akan menampilkan secret terbaru agar programmer surrounding bisa mencocokkan konfigurasi
-
 ## Monitoring dan Audit
 
 Dashboard admin tersedia untuk:
@@ -218,8 +158,6 @@ Dashboard admin tersedia untuk:
 - top users
 - top apps
 - recent launches
-
-Data audit bersumber dari `sso_launch_logs`.
 
 ## Menjalankan Test
 
@@ -238,7 +176,6 @@ Sebelum push dan deploy:
 - pastikan `APP_DEBUG=false`
 - pastikan `APP_URL` sesuai domain production
 - pastikan database production sudah disiapkan
-- review kembali `shared secret` aplikasi SSO aktif
 - pastikan session, cache, dan queue sesuai environment production
 
 Perintah umum sesudah deploy:
@@ -257,8 +194,7 @@ php artisan optimize:clear
 
 Sebelum push ke GitHub:
 - review isi `.env` agar tidak ikut ter-push
-- review data `shared secret` pada seeder jika repo akan dibagikan luas
-- jika repo hanya untuk internal bank, simpan dengan kontrol akses yang sesuai
+- pastikan hanya data internal yang memang boleh dibagikan yang masuk ke repository
 
 ## Lisensi
 
