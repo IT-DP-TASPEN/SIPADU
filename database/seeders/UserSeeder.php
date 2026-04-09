@@ -9,7 +9,7 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $users = json_decode(file_get_contents(database_path('seeders/data/users.json')), true, flags: JSON_THROW_ON_ERROR);
+        $users = json_decode(file_get_contents(database_path('seeders/data/users_final.json')), true, flags: JSON_THROW_ON_ERROR);
 
         foreach ($users as $user) {
             DB::table('users')->updateOrInsert(
