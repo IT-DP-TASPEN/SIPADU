@@ -43,6 +43,7 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased">
     @include('components.cyberpunk-bg')
+    <div class="scanline"></div>
     <div class="relative isolate flex-1 flex flex-col">
         {{ $slot }}
     </div>
