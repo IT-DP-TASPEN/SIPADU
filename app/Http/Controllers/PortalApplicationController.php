@@ -28,6 +28,8 @@ class PortalApplicationController extends Controller
                 'sso_enabled' => true,
             ]),
             'accessRulesText' => '',
+            'divisions' => \App\Models\User::distinct()->orderBy('division_name')->pluck('division_name')->filter()->values(),
+            'titles' => \App\Models\User::distinct()->orderBy('title')->pluck('title')->filter()->values(),
         ]);
     }
 
@@ -46,6 +48,11 @@ class PortalApplicationController extends Controller
         return view('portal-applications.edit', [
             'application' => $portalApplication,
             'accessRulesText' => $this->formatAccessRules($portalApplication),
+            'divisions' => \App\Models\User::distinct()->orderBy('division_name')->pluck('division_name')->filter()->values(),
+            'titles' => \App\Models\User::distinct()->orderBy('title')->pluck('title')->filter()->values(),
+            'existingRules' => $portalApplication->accessRules()->get()->map(function($rule) {
+                return $rule->division_name ?: $rule->job_title;
+            })->filter()->values()->all(),
         ]);
     }
 
@@ -89,7 +96,8 @@ class PortalApplicationController extends Controller
             'is_frequent' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
             'open_in_new_tab' => ['nullable', 'boolean'],
-            'access_rules' => ['nullable', 'string'],
+            'access_rules' => ['nullable', 'array'],
+            'access_rules.*' => ['string'],
         ]);
 
         $data['slug'] = $data['slug'] ?: str($data['name'])->slug()->value();
@@ -116,26 +124,45 @@ class PortalApplicationController extends Controller
     {
         $application->accessRules()->delete();
 
-        collect(preg_split('/\r\n|\r|\n/', (string) $request->input('access_rules', '')))
-            ->map(fn (string $line) => trim($line))
-            ->filter()
-            ->values()
-            ->each(function (string $line, int $index) use ($application): void {
+        $rules = $request->input('access_rules', []);
+        
+        if (is_string($rules)) {
+            $rules = collect(preg_split('/\r\n|\r|\n/', $rules))
+                ->map(fn (string $line) => trim($line))
+                ->filter()
+                ->values()
+                ->all();
+        }
+
+        collect($rules)->each(function (string $selection, int $index) use ($application): void {
+            // Check if it's a pipe-separated rule or just a single value (division/title)
+            if (str_contains($selection, '|')) {
                 [$division, $jobTitle, $officeType, $branchCode, $branchName] = array_pad(
-                    array_map(fn (string $segment) => $this->normalizeRuleValue($segment), explode('|', $line)),
+                    array_map(fn (string $segment) => $this->normalizeRuleValue($segment), explode('|', $selection)),
                     5,
                     null,
                 );
+            } else {
+                // If it's a single value from our new multi-select, we need to decide if it's a division or a title.
+                // For simplicity, we'll check against our known lists or just try both.
+                // In a production system, we might want a prefix like "div:" or "title:".
+                $isDivision = \App\Models\User::where('division_name', $selection)->exists();
+                $division = $isDivision ? $selection : null;
+                $jobTitle = !$isDivision ? $selection : null;
+                $officeType = null;
+                $branchCode = null;
+                $branchName = null;
+            }
 
-                $application->accessRules()->create([
-                    'division_name' => $division,
-                    'job_title' => $jobTitle,
-                    'office_type' => $officeType,
-                    'branch_code' => $branchCode,
-                    'branch_name' => $branchName,
-                    'priority' => $index + 1,
-                ]);
-            });
+            $application->accessRules()->create([
+                'division_name' => $division,
+                'job_title' => $jobTitle,
+                'office_type' => $officeType,
+                'branch_code' => $branchCode,
+                'branch_name' => $branchName,
+                'priority' => $index + 1,
+            ]);
+        });
     }
 
     private function formatAccessRules(PortalApplication $application): string

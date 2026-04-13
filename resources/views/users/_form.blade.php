@@ -28,7 +28,7 @@
         <x-forms.label for="password">Password</x-forms.label>
         <x-forms.input id="password" name="password" type="password" />
         @if(isset($passwordOptional) && $passwordOptional)
-            <p class="mt-2 text-xs text-slate-500">Biarkan kosong jika tidak ingin mengganti password.</p>
+            <p class="mt-2 text-xs text-slate-400">Biarkan kosong jika tidak ingin mengganti password.</p>
         @endif
     </div>
 
