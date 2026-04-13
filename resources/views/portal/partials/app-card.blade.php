@@ -1,42 +1,41 @@
 @php
     $accentMap = [
-        'brand' => 'bg-brand-600',
-        'emerald' => 'bg-emerald-600',
-        'teal' => 'bg-teal-700',
-        'lime' => 'bg-lime-600',
-        'sky' => 'bg-sky-600',
-        'slate' => 'bg-slate-700',
-        'amber' => 'bg-amber-500',
-        'rose' => 'bg-rose-600',
-        'orange' => 'bg-orange-500',
-        'violet' => 'bg-violet-600',
+        'brand' => 'from-brand-500 to-brand-600',
+        'emerald' => 'from-emerald-400 to-emerald-600',
+        'teal' => 'from-teal-400 to-teal-600',
+        'lime' => 'from-lime-400 to-lime-600',
+        'sky' => 'from-sky-400 to-sky-600',
+        'slate' => 'from-slate-400 to-slate-600',
+        'amber' => 'from-amber-400 to-amber-600',
+        'rose' => 'from-rose-400 to-rose-600',
+        'orange' => 'from-orange-400 to-orange-600',
+        'violet' => 'from-violet-400 to-violet-600',
     ];
 
-    $accentClass = $accentMap[$application->accent_color] ?? 'bg-brand-600';
+    $accentClass = $accentMap[$application->accent_color] ?? 'from-brand-500 to-brand-600';
 @endphp
 
-<a href="{{ route('portal.launch', $application) }}" target="{{ $application->open_in_new_tab ? '_blank' : '_self' }}" class="app-tile group relative overflow-hidden flex flex-col justify-between h-full rounded-[24px] p-6">
-    <div class="bracketPulse absolute inset-0 z-0"></div>
-    <div class="relative z-10">
-        <div class="flex items-start justify-between mb-4">
-            <div class="{{ $accentClass }} inline-flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 shadow-lg text-white group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all duration-300">
-                @include('portal.partials.app-icon', ['icon' => $application->icon])
-            </div>
-            @if ($application->badge)
-                <span class="rounded-full border border-brand-400/30 bg-brand-400/10 px-2.5 py-1 text-[10px] font-bold text-brand-300 uppercase tracking-widest shadow-[0_0_10px_rgba(40,147,83,0.1)]">{{ $application->badge }}</span>
-            @endif
+<a href="{{ route('portal.launch', $application) }}" target="{{ $application->open_in_new_tab ? '_blank' : '_self' }}" class="app-tile group relative overflow-hidden flex flex-col items-center justify-center h-full rounded-[16px] p-6 lg:p-8 min-h-[200px] lg:min-h-[240px]">
+    <!-- Cyberpunk Brackets -->
+    <div class="hologram-bracket tl"></div>
+    <div class="hologram-bracket tr"></div>
+    <div class="hologram-bracket bl"></div>
+    <div class="hologram-bracket br"></div>
+
+    <div class="relative z-10 flex flex-col items-center justify-center w-full mt-2">
+        <!-- Icon Container -->
+        <div class="bg-gradient-to-b {{ $accentClass }} inline-flex h-[64px] w-[64px] lg:h-[72px] lg:w-[72px] items-center justify-center rounded-[16px] shadow-lg text-white mb-6 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(0,255,255,0.6)]">
+            @include('portal.partials.app-icon', ['icon' => $application->icon])
         </div>
-        <h4 class="text-xl font-bold tracking-tight text-slate-100 group-hover:text-white transition-colors">{{ $application->name }}</h4>
-        <p class="mt-2 text-sm text-slate-400 leading-relaxed font-medium">{{ $application->description }}</p>
-    </div>
-    <div class="relative z-10 mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
-        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-slate-600 group-hover:bg-cyan-400 transition-colors"></span> 
-            {{ $application->usesSso() ? 'Mode: SSO' : 'Mode: Login' }}
+        
+        <!-- App Name -->
+        <h4 class="text-[15px] lg:text-[17px] font-bold tracking-wide text-white uppercase group-hover:text-cyan-400 group-hover:text-glow-cyan transition-colors text-center w-full whitespace-nowrap overflow-hidden text-ellipsis">
+            {{ $application->name }}
+        </h4>
+        
+        <!-- Description / Subtitle -->
+        <p class="mt-2 text-[10px] text-slate-400 tracking-widest uppercase font-medium text-center w-full px-1 line-clamp-1">
+            {{ $application->description }}
         </p>
-        <span class="text-sm font-bold text-cyan-500 group-hover:text-cyan-400 flex items-center gap-1 transition-colors">
-            Buka aplikasi
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-        </span>
     </div>
 </a>

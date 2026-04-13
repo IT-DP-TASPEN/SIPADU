@@ -110,15 +110,17 @@ body {
 
 .hologram-bracket {
     position: absolute;
-    width: 24px;
-    height: 24px;
-    border-color: #22d3ee;
+    width: 14px;
+    height: 14px;
+    border-color: #00FFFF;
     border-style: solid;
     pointer-events: none;
     animation: bracketPulse 2s infinite ease-in-out;
 }
-.bracket-left { top: 0; left: 0; border-width: 3px 0 0 3px; }
-.bracket-right { bottom: 0; right: 0; border-width: 0 3px 3px 0; }
+.tl { top: 16px; left: 16px; border-width: 2px 0 0 2px; }
+.tr { top: 16px; right: 16px; border-width: 2px 2px 0 0; }
+.bl { bottom: 16px; left: 16px; border-width: 0 0 2px 2px; }
+.br { bottom: 16px; right: 16px; border-width: 0 2px 2px 0; }
 
 .bracketPulse {
     animation: bracketPulse 3s infinite ease-in-out;
