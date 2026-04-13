@@ -145,15 +145,33 @@
             <div class="space-y-6">
                 <div>
                     <x-forms.label for="access_rules">Pilih Divisi & Jabatan</x-forms.label>
-                    <p class="mb-3 text-[10px] uppercase tracking-widest text-slate-500 font-bold">Multi Choice Dropdown</p>
+                    <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Multi Choice List</p>
+                            <div class="flex gap-2 border-l border-white/10 pl-3">
+                                <button type="button" id="access_rules_select_all" class="text-[10px] font-bold text-brand-400 hover:text-brand-300 transition uppercase tracking-wider">Pilih Semua</button>
+                                <button type="button" id="access_rules_clear_all" class="text-[10px] font-bold text-rose-400 hover:text-rose-300 transition uppercase tracking-wider">Hapus Semua</button>
+                            </div>
+                        </div>
+                        <div class="relative w-full sm:w-1/2">
+                            <input type="text" id="access_rules_search" placeholder="Cari divisi/jabatan..." 
+                                   class="block w-full rounded-xl border-white/10 bg-white/5 py-1.5 pl-8 pr-3 text-[11px] text-white placeholder-slate-600 focus:border-brand-500 focus:ring-0">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-slate-600">
+                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="relative group">
                         <select id="access_rules" name="access_rules[]" multiple size="8" class="block w-full rounded-2xl border border-white/10 bg-white/5 px-2 py-2 text-sm text-slate-100 shadow-inner backdrop-blur-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 transition-colors custom-scrollbar">
-                            <optgroup label="Berdasarkan Divisi" class="text-xs font-bold text-brand-300 bg-[#0f1f18] py-2">
+                            <optgroup label="Berdasarkan Divisi" id="group_divisions" class="text-xs font-bold text-brand-300 bg-[#0f1f18] py-2">
                                 @foreach($divisions as $div)
                                     <option value="{{ $div }}" @selected(collect(old('access_rules', $existingRules ?? []))->contains($div)) class="py-2 px-3 hover:bg-white/10">{{ $div }}</option>
                                 @endforeach
                             </optgroup>
-                            <optgroup label="Berdasarkan Jabatan" class="text-xs font-bold text-amber-500 bg-[#1a1a1a] py-2">
+                            <optgroup label="Berdasarkan Jabatan" id="group_titles" class="text-xs font-bold text-amber-500 bg-[#1a1a1a] py-2">
                                 @foreach($titles as $title)
                                     <option value="{{ $title }}" @selected(collect(old('access_rules', $existingRules ?? []))->contains($title)) class="py-2 px-3 hover:bg-white/10">{{ $title }}</option>
                                 @endforeach
@@ -163,6 +181,15 @@
                             Tahan <kbd class="px-1 rounded bg-white/10 border border-white/10">Ctrl</kbd> atau <kbd class="px-1 rounded bg-white/10 border border-white/10">Cmd</kbd> untuk memilih lebih dari satu.
                         </p>
                     </div>
+
+                    <!-- Selected Items Tags Container -->
+                    <div class="mt-4">
+                        <p class="mb-2 text-[10px] uppercase tracking-widest text-slate-500 font-bold">Item Terpilih</p>
+                        <div id="selected_rules_tags" class="flex flex-wrap gap-2 min-h-[40px] rounded-2xl border border-dashed border-white/10 p-3 bg-white/2 transition-colors">
+                            <p id="no_selection_text" class="text-xs text-slate-600 italic">Belum ada item yang dipilih</p>
+                        </div>
+                    </div>
+                </div>
                 </div>
 
                 <div class="pt-4 space-y-4">
@@ -202,5 +229,121 @@
     select[multiple] option:checked {
         background: linear-gradient(to right, rgba(40, 147, 83, 0.4), rgba(40, 147, 83, 0.2)) !important;
         color: white !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('access_rules_search');
+        const selectAllBtn = document.getElementById('access_rules_select_all');
+        const clearAllBtn = document.getElementById('access_rules_clear_all');
+        const select = document.getElementById('access_rules');
+        const tagsContainer = document.getElementById('selected_rules_tags');
+        const noSelectionText = document.getElementById('no_selection_text');
+        const options = Array.from(select.options);
+
+        // --- Tag Rendering Logic ---
+        function renderTags() {
+            const selectedOptions = options.filter(opt => opt.selected);
+            
+            // Clear current tags except "no selection" placeholder
+            tagsContainer.innerHTML = '';
+            
+            if (selectedOptions.length === 0) {
+                tagsContainer.appendChild(noSelectionText);
+                return;
+            }
+
+            selectedOptions.forEach(option => {
+                const tag = document.createElement('div');
+                const isDivision = option.parentElement.id === 'group_divisions';
+                const accentClass = isDivision ? 'bg-brand-500/10 text-brand-300 border-brand-500/20' : 'bg-amber-500/10 text-amber-300 border-amber-500/20';
+                
+                tag.className = `flex items-center gap-2 rounded-lg border ${accentClass} px-2 py-1 text-[11px] font-bold shadow-sm transition animation-fade-in`;
+                tag.innerHTML = `
+                    <span>${option.text}</span>
+                    <button type="button" class="tag-remove text-white/40 hover:text-white transition" data-value="${option.value}">
+                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                `;
+                tagsContainer.appendChild(tag);
+            });
+
+            // Re-attach event listeners for remove buttons
+            document.querySelectorAll('.tag-remove').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const val = this.dataset.value;
+                    const opt = options.find(o => o.value === val);
+                    if (opt) {
+                        opt.selected = false;
+                        renderTags();
+                    }
+                });
+            });
+        }
+
+        // --- Search Logic ---
+        if (searchInput && select) {
+            searchInput.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase();
+                
+                options.forEach(option => {
+                    const text = option.text.toLowerCase();
+                    const matches = text.includes(term);
+                    
+                    if (matches) {
+                        option.style.display = 'block';
+                    } else {
+                        if (!option.selected) {
+                            option.style.display = 'none';
+                        }
+                    }
+                });
+
+                document.querySelectorAll('#access_rules optgroup').forEach(group => {
+                    const visibleOptions = Array.from(group.options).filter(opt => opt.style.display !== 'none');
+                    group.style.display = visibleOptions.length > 0 ? 'block' : 'none';
+                });
+            });
+        }
+
+        // --- Bulk Actions ---
+        if (selectAllBtn && select) {
+            selectAllBtn.addEventListener('click', function() {
+                options.forEach(option => {
+                    if (option.style.display !== 'none') {
+                        option.selected = true;
+                    }
+                });
+                renderTags();
+            });
+        }
+
+        if (clearAllBtn && select) {
+            clearAllBtn.addEventListener('click', function() {
+                options.forEach(option => {
+                    option.selected = false;
+                });
+                renderTags();
+            });
+        }
+
+        // --- Event Listeners ---
+        select.addEventListener('change', renderTags);
+
+        // Initial render
+        renderTags();
+    });
+</script>
+
+<style>
+    .animation-fade-in {
+        animation: fadeIn 0.2s ease-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(2px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
