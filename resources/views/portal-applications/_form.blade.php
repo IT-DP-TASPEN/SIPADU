@@ -187,29 +187,33 @@
                         <p class="mb-2 text-[10px] uppercase tracking-widest text-slate-500 font-bold">Item Terpilih</p>
                         <div id="selected_rules_tags" class="flex flex-wrap gap-2 min-h-[40px] rounded-2xl border border-dashed border-white/10 p-3 bg-white/2 transition-colors">
                             <p id="no_selection_text" class="text-xs text-slate-600 italic">Belum ada item yang dipilih</p>
-                        </div>
                     </div>
                 </div>
-                </div>
+                </div> <!-- Closes selection group (Line 146) -->
 
-                <div class="pt-4 space-y-4">
-                    <label class="flex items-center gap-3 text-sm font-semibold text-slate-300">
-                        <x-forms.checkbox name="is_active" value="1" @checked(old('is_active', $application->is_active ?? true)) />
-                        Status Aktif
+                <div class="pt-6 space-y-5 border-t border-white/10 mt-6">
+                    <label class="flex items-center gap-4 text-sm font-bold text-slate-200 cursor-pointer group">
+                        <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $application->is_active ?? true)) 
+                               class="w-5 h-5 rounded border-2 border-white/20 bg-brand-900/40 text-brand-500 focus:ring-brand-500/50 focus:ring-offset-0 transition-all cursor-pointer">
+                        <span class="group-hover:text-brand-400 transition-colors">Status Aktif</span>
                     </label>
-                    <label class="flex items-center gap-3 text-sm font-semibold text-slate-300">
-                        <x-forms.checkbox name="is_frequent" value="1" @checked(old('is_frequent', $application->is_frequent ?? false)) />
-                        Aplikasi Utama (Frequent)
+                    
+                    <label class="flex items-center gap-4 text-sm font-bold text-slate-200 cursor-pointer group">
+                        <input type="checkbox" name="is_frequent" value="1" @checked(old('is_frequent', $application->is_frequent ?? false)) 
+                               class="w-5 h-5 rounded border-2 border-white/20 bg-brand-900/40 text-brand-500 focus:ring-brand-500/50 focus:ring-offset-0 transition-all cursor-pointer">
+                        <span class="group-hover:text-brand-400 transition-colors">Aplikasi Utama (Frequent)</span>
                     </label>
-                    <label class="flex items-center gap-3 text-sm font-semibold text-slate-300">
-                        <x-forms.checkbox name="open_in_new_tab" value="1" @checked(old('open_in_new_tab', $application->open_in_new_tab ?? true)) />
-                        Buka di Tab Baru
+                    
+                    <label class="flex items-center gap-4 text-sm font-bold text-slate-200 cursor-pointer group">
+                        <input type="checkbox" name="open_in_new_tab" value="1" @checked(old('open_in_new_tab', $application->open_in_new_tab ?? true)) 
+                               class="w-5 h-5 rounded border-2 border-white/20 bg-brand-900/40 text-brand-500 focus:ring-brand-500/50 focus:ring-offset-0 transition-all cursor-pointer">
+                        <span class="group-hover:text-brand-400 transition-colors">Buka di Tab Baru</span>
                     </label>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</div> <!-- Closes last grid containers -->
 
 <style>
     .custom-scrollbar::-webkit-scrollbar {
