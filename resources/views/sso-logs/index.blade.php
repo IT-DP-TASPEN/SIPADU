@@ -47,20 +47,20 @@
 
             <form method="GET" action="{{ route('sso-logs.index') }}" class="section-panel mb-5 rounded-[24px] p-4 shadow-sm">
                 <div class="grid gap-3 xl:grid-cols-[1.2fr_0.7fr_0.6fr_0.55fr_0.55fr_auto]">
-                    <input type="text" name="q" value="{{ $search }}" placeholder="Cari nama user, employee ID, nama aplikasi, slug, URL, token ID..." class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm placeholder:text-slate-500 focus:border-brand-500 focus:ring-brand-500/30">
-                    <select name="application_id" class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm focus:border-brand-500 focus:ring-brand-500/30">
+                    <x-forms.input name="q" value="{{ $search }}" placeholder="Cari nama user, employee ID, nama aplikasi, slug, URL, token ID..." />
+                    <x-forms.select name="application_id">
                         <option value="">Semua aplikasi</option>
                         @foreach ($applications as $application)
                             <option value="{{ $application->id }}" @selected($applicationId === $application->id)>{{ $application->name }}</option>
                         @endforeach
-                    </select>
-                    <select name="launch_mode" class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm focus:border-brand-500 focus:ring-brand-500/30">
+                    </x-forms.select>
+                    <x-forms.select name="launch_mode">
                         <option value="">Semua mode</option>
                         <option value="sso" @selected($launchMode === 'sso')>SSO</option>
                         <option value="launch_only" @selected($launchMode === 'launch_only')>Launch only</option>
-                    </select>
-                    <input type="date" name="date_from" value="{{ $dateFrom }}" class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm focus:border-brand-500 focus:ring-brand-500/30">
-                    <input type="date" name="date_to" value="{{ $dateTo }}" class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm focus:border-brand-500 focus:ring-brand-500/30">
+                    </x-forms.select>
+                    <x-forms.input type="date" name="date_from" value="{{ $dateFrom }}" />
+                    <x-forms.input type="date" name="date_to" value="{{ $dateTo }}" />
                     <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-brand-700">
                         Filter
                     </button>

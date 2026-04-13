@@ -27,19 +27,104 @@
 @layer base {
     body {
         font-family: var(--font-sans);
-        background:
-            radial-gradient(circle at top left, rgba(216, 242, 224, 0.95), transparent 34%),
-            radial-gradient(circle at top right, rgba(130, 208, 157, 0.22), transparent 28%),
-            linear-gradient(180deg, #f8fbf8 0%, #eef5ef 100%);
-        color: var(--color-ink);
+        background-color: #010409; 
+        overflow-x: hidden;
+        color: #f1f5f9; /* text-slate-100 equivalent */
     }
 }
 
 @layer components {
     .glass-panel {
-        background: rgba(255, 255, 255, 0.72);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.05); /* Update to match dark theme */
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+    }
+
+    .glass-morphism {
+        background: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .glass-nav {
+        backdrop-filter: blur(30px) !important;
+        -webkit-backdrop-filter: blur(30px) !important;
+    }
+
+    .text-glow-cyan {
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    .portal-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        object-fit: cover;
+        opacity: 0.4;
+        filter: brightness(0.3) saturate(1.5) contrast(1.3);
+    }
+
+    .circuit-grid {
+        position: fixed;
+        inset: 0;
+        background-image: 
+            linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 50px 50px;
+        z-index: -1;
+    }
+
+    .app-tile {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+    .app-tile:hover {
+        transform: translateY(-8px) scale(1.05);
+        border-color: #00FFFF !important;
+        background: rgba(0, 255, 255, 0.1) !important;
+        box-shadow: 0 0 35px rgba(0, 255, 255, 0.4) !important;
+    }
+    .app-tile:hover svg {
+        filter: drop-shadow(0 0 10px #00FFFF);
+    }
+
+    .logo-hologram {
+        filter: brightness(0) invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+    }
+
+    .scanline {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+        z-index: 99;
+        pointer-events: none;
+        animation: scanMove 4s ease-in-out infinite alternate;
+    }
+
+    .bracket {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-color: #00FFFF;
+        border-style: solid;
+        pointer-events: none;
+        animation: bracketPulse 2s infinite ease-in-out;
+    }
+    .tl { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
+    .tr { top: 12px; right: 12px; border-width: 2px 2px 0 0; }
+    .bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; }
+    .br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
+
+    .pulse-green {
+        animation: pulse-green 2s infinite;
     }
 
     .app-card,
@@ -63,9 +148,69 @@
     }
 }
 
+@keyframes scanMove {
+    0% { transform: translateY(-100px); }
+    100% { transform: translateY(100vh); }
+}
+
+@keyframes bracketPulse {
+    0%, 100% { opacity: 0.6; filter: brightness(1); }
+    50% { opacity: 1; filter: brightness(1.8); }
+}
+
 @keyframes reveal-up {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@layer components {
+    /* Cyberpunk Prose for Article/Content */
+    .cyber-prose {
+        counter-reset: h2counter;
+        color: #cbd5e1;
+        line-height: 1.6;
+    }
+
+    .cyber-prose h2 {
+        counter-increment: h2counter;
+        counter-reset: h3counter;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-top: 2.5rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .cyber-prose h2::before {
+        content: counter(h2counter) ".";
+        color: #00ffff;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+    }
+
+    .cyber-prose h3 {
+        counter-increment: h3counter;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #e2e8f0;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .cyber-prose h3::before {
+        content: counter(h2counter) "." counter(h3counter) ".";
+        color: #00ffff;
+        opacity: 0.85;
     }
 }

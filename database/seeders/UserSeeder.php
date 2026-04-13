@@ -12,12 +12,10 @@ class UserSeeder extends Seeder
         $users = json_decode(file_get_contents(database_path('seeders/data/users_final.json')), true, flags: JSON_THROW_ON_ERROR);
 
         foreach ($users as $user) {
-            // Set default password if null
             if (!isset($user['password']) || is_null($user['password'])) {
                 $user['password'] = 'DPT@SP3n';
             }
 
-            // Hash the password for Laravel Auth
             $user['password'] = \Illuminate\Support\Facades\Hash::make($user['password']);
 
             DB::table('users')->updateOrInsert(

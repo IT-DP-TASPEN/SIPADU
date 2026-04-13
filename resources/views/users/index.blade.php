@@ -31,7 +31,7 @@
 
             <form method="GET" action="{{ route('users.index') }}" class="section-panel mb-5 rounded-[24px] p-4 shadow-sm">
                 <div class="flex flex-col gap-3 sm:flex-row">
-                    <input type="text" name="q" value="{{ $search }}" placeholder="Cari nama, username, ID karyawan, email, divisi, jabatan..." class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm placeholder:text-slate-500 focus:border-brand-500 focus:ring-brand-500/30">
+                    <x-forms.input name="q" value="{{ $search }}" placeholder="Cari nama, username, ID karyawan, email, divisi, jabatan..." />
                     <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-brand-700">
                         Cari
                     </button>

@@ -40,23 +40,23 @@
                         @csrf
 
                         <div>
-                            <label for="login" class="mb-2 block text-sm font-semibold text-slate-200">Username atau Email</label>
-                            <input id="login" name="login" type="text" value="{{ old('login') }}" required autofocus class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm placeholder:text-slate-500 focus:border-brand-500 focus:ring-brand-500/30">
+                            <x-forms.label for="login" class="text-slate-200">Username atau Email</x-forms.label>
+                            <x-forms.input id="login" name="login" type="text" value="{{ old('login') }}" required autofocus />
                             @error('login')
-                                <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                                <p class="mt-2 text-sm text-rose-500">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
                             <div class="mb-2 flex items-center justify-between gap-3">
-                                <label for="password" class="block text-sm font-semibold text-slate-200">Password</label>
+                                <x-forms.label for="password" class="mb-0 text-slate-200">Password</x-forms.label>
                                 {{-- <span class="text-xs text-slate-500">Contoh: DPT@SP3n</span> --}}
                             </div>
-                            <input id="password" name="password" type="password" required class="block w-full rounded-2xl border border-white/10 bg-[#09120e] px-4 py-3 text-sm text-white shadow-sm focus:border-brand-500 focus:ring-brand-500/30">
+                            <x-forms.input id="password" name="password" type="password" required />
                         </div>
 
                         <label class="flex items-center gap-3 text-sm text-slate-400">
-                            <input type="checkbox" name="remember" value="1" class="rounded border-white/10 bg-[#09120e] text-brand-600 focus:ring-brand-500/30">
+                            <x-forms.checkbox name="remember" value="1" />
                             Ingat sesi pada perangkat ini
                         </label>
 

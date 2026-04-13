@@ -77,16 +77,20 @@
 
     <main class="px-4 pb-12 pt-8 sm:px-6 lg:px-8 lg:pt-10">
         <div class="mx-auto max-w-7xl">
-            <section class="reveal mx-auto max-w-4xl px-2 py-8 text-center sm:py-12">
-                <div class="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/80 px-4 py-2 text-xs font-semibold text-brand-700 shadow-soft">
-                    <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-                    SSO gateway untuk seluruh aplikasi internal
+            <section class="reveal relative mx-auto max-w-4xl px-4 py-8 text-center sm:py-12 z-10 flex-shrink-0">
+                <!-- Bracket elements -->
+                <div class="hologram-bracket bracket-left"></div>
+                <div class="hologram-bracket bracket-right"></div>
+
+                <div class="mx-auto mb-6 inline-flex items-center space-x-3 rounded-full border border-brand-500/30 bg-glow-pill px-6 py-2">
+                    <div class="h-2.5 w-2.5 rounded-full bg-brand-400 shadow-[0_0_10px_rgba(40,147,83,0.8)] cyberpunk-glow"></div>
+                    <span class="text-sm font-semibold uppercase tracking-[0.1em] text-brand-400">Enterprise Central</span>
                 </div>
-                <h2 class="mx-auto max-w-3xl text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-                    Cari aplikasi, fitur, atau menu yang Anda butuhkan.
+                <h2 class="mx-auto mb-6 text-5xl font-extrabold tracking-tight text-white glow-text-shadow text-glow-cyan md:text-7xl">
+                    DP <span class="bg-clip-text text-transparent drop-shadow-sm bg-gradient-to-r from-brand-400 to-cyan-400">TASPEN</span> PORTAL
                 </h2>
-                <p class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base">
-                    Pengguna tidak perlu menelusuri menu. Ketik kebutuhan Anda, lalu SIPADU mengarahkan ke aplikasi tujuan melalui single sign-on.
+                <p class="mx-auto mt-4 max-w-2xl text-lg font-medium leading-relaxed text-slate-300 md:text-xl">
+                    Pengguna tidak perlu menelusuri menu. Ketik kebutuhan Anda, lalu SIPADU mengarahkan ke aplikasi tujuan lewat single sign-on.
                 </p>
 
                 <div class="hero-search relative mx-auto mt-8 max-w-4xl rounded-[36px] p-4 shadow-soft sm:p-5">

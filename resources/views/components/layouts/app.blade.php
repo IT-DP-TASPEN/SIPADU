@@ -41,10 +41,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('portal.css') }}">
 </head>
-<body class="min-h-screen bg-mist text-ink antialiased">
-    <div class="relative isolate overflow-hidden">
-        <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-[radial-gradient(circle_at_top,rgba(40,147,83,0.12),transparent_58%)]"></div>
-        <div class="pointer-events-none absolute left-1/2 top-16 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-brand-200/30 blur-3xl"></div>
+<body class="min-h-screen flex flex-col antialiased">
+    @include('components.cyberpunk-bg')
+    <div class="relative isolate flex-1 flex flex-col">
         {{ $slot }}
     </div>
     <script src="{{ asset('portal.js') }}"></script>
