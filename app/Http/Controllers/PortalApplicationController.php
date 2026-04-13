@@ -10,10 +10,41 @@ use Illuminate\View\View;
 
 class PortalApplicationController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = $request->query('q');
+        $mode = $request->query('mode');
+        $status = $request->query('status');
+
+        $applications = PortalApplication::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('slug', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->when($mode, function ($query, $mode) {
+                $query->where('launch_mode', $mode);
+            })
+            ->when($status, function ($query, $status) {
+                if ($status === 'active') {
+                    $query->where('is_active', true);
+                } elseif ($status === 'inactive') {
+                    $query->where('is_active', false);
+                } elseif ($status === 'frequent') {
+                    $query->where('is_frequent', true);
+                }
+            })
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
         return view('portal-applications.index', [
-            'applications' => PortalApplication::query()->orderBy('sort_order')->orderBy('name')->get(),
+            'applications' => $applications,
+            'search' => $search,
+            'mode' => $mode,
+            'status' => $status,
         ]);
     }
 

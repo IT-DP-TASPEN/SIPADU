@@ -29,6 +29,49 @@
                 </div>
             @endif
 
+            <!-- Search & Filter Bar -->
+            <div class="glass-morphism mb-6 rounded-[28px] p-2">
+                <form action="{{ route('portal-applications.index') }}" method="GET" class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <div class="relative flex-1">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" name="q" value="{{ $search }}" placeholder="Cari nama, slug, atau deskripsi..." 
+                               class="block w-full rounded-2xl border-white/10 bg-white/5 py-3 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:border-brand-500 focus:ring-brand-500/20 shadow-inner">
+                    </div>
+
+                    <div class="flex gap-2">
+                        <div class="w-40">
+                            <select name="mode" onchange="this.form.submit()" class="block w-full rounded-2xl border-white/10 bg-[#0c1410] py-3 text-sm text-slate-300 focus:border-brand-500 focus:ring-brand-500/20">
+                                <option value="">Semua Mode</option>
+                                <option value="sso" @selected($mode === 'sso')>Portal SSO</option>
+                                <option value="launch_only" @selected($mode === 'launch_only')>Launch Only</option>
+                            </select>
+                        </div>
+                        <div class="w-40">
+                            <select name="status" onchange="this.form.submit()" class="block w-full rounded-2xl border-white/10 bg-[#0c1410] py-3 text-sm text-slate-300 focus:border-brand-500 focus:ring-brand-500/20">
+                                <option value="">Semua Status</option>
+                                <option value="active" @selected($status === 'active')>Aktif</option>
+                                <option value="inactive" @selected($status === 'inactive')>Tidak Aktif</option>
+                                <option value="frequent" @selected($status === 'frequent')>Frequent App</option>
+                            </select>
+                        </div>
+                        @if($search || $mode || $status)
+                            <a href="{{ route('portal-applications.index') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-slate-400 hover:text-white transition group">
+                                <svg class="h-4 w-4 transition group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </a>
+                        @endif
+                        <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-brand-600 px-6 py-3 text-sm font-bold text-white shadow-card tracking-wide transition hover:bg-brand-500 active:scale-95">
+                            Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             <div class="section-panel overflow-hidden rounded-[28px]">
                 <div class="overflow-x-auto">
                     <table class="admin-table min-w-full divide-y divide-white/6">
