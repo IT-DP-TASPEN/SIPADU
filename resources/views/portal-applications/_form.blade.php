@@ -339,6 +339,49 @@
 
         // Initial render
         renderTags();
+
+        // --- Auto-generate SSO Checkpoint URL & Slug ---
+        const nameInput = document.getElementById('name');
+        const slugInput = document.getElementById('slug');
+        const urlInput = document.getElementById('url');
+        const ssoUrlInput = document.getElementById('sso_login_url');
+
+        if (nameInput && slugInput) {
+            let slugManual = slugInput.value !== '';
+            
+            slugInput.addEventListener('input', function() {
+                slugManual = true;
+            });
+            
+            nameInput.addEventListener('input', function() {
+                if (!slugManual || slugInput.value === '') {
+                    slugInput.value = nameInput.value.toLowerCase()
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-')
+                        .replace(/^-|-$/g, '');
+                }
+            });
+        }
+
+        if (urlInput && ssoUrlInput) {
+            let ssoManual = ssoUrlInput.value !== '';
+            
+            ssoUrlInput.addEventListener('input', function() {
+                ssoManual = true;
+            });
+
+            urlInput.addEventListener('input', function() {
+                if (!ssoManual || ssoUrlInput.value === '') {
+                    const baseUrl = urlInput.value.replace(/\/+$/, '');
+                    if (baseUrl) {
+                        ssoUrlInput.value = baseUrl + '/api/sso/login';
+                    } else {
+                        ssoUrlInput.value = '';
+                    }
+                }
+            });
+        }
     });
 </script>
 

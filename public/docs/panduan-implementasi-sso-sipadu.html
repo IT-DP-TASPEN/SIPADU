@@ -416,7 +416,10 @@ class SsoTokenService
             abort(403, 'Signature token tidak valid.');
         }
 
-        $payload = json_decode(base64_decode($encodedPayload), true);
+        $decodedPayloadJson = base64_decode(
+            strtr($encodedPayload, '-_', '+/').str_repeat('=', (4 - strlen($encodedPayload) % 4) % 4)
+        );
+        $payload = json_decode($decodedPayloadJson, true);
 
         if (! is_array($payload)) {
             abort(403, 'Payload token tidak valid.');
