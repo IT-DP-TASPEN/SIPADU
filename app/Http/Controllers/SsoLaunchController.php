@@ -10,10 +10,13 @@ use Illuminate\Http\Request;
 
 class SsoLaunchController extends Controller
 {
-    public function __invoke(Request $request, PortalApplication $application, SsoTokenService $tokenService): RedirectResponse
+    public function __invoke(Request $request, PortalApplication $application, SsoTokenService $tokenService)
     {
         abort_unless($application->is_active, 404);
-        abort_unless($application->isAccessibleBy($request->user()), 403);
+
+        if (! $application->isAccessibleBy($request->user())) {
+            return response()->view('portal.unauthorized', ['application' => $application], 403);
+        }
 
         $targetUrl = $application->url;
         $tokenId = null;
