@@ -138,7 +138,7 @@
                     @if($application->isCustomIcon())
                         <div class="mt-4 flex items-center gap-4 p-4 rounded-2xl bg-brand-500/5 border border-brand-500/20 shadow-lg shadow-brand-500/5">
                             <div class="h-16 w-16 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center p-2 border border-white/10">
-                                <img src="{{ $application->getIconUrl() }}" alt="Current Logo" class="h-full w-full object-contain">
+                                <img src="{{ '/storage/' . $application->icon }}" alt="Current Logo" class="h-full w-full object-contain">
                             </div>
                             <div class="flex-1">
                                 <p class="text-xs font-bold text-white uppercase tracking-wider">Logo Custom Aktif</p>
