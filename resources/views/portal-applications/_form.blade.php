@@ -152,9 +152,22 @@
                 <div>
                     <x-forms.label for="accent_color">Warna Aksen</x-forms.label>
                     <x-forms.select id="accent_color" name="accent_color">
-                        @foreach(['brand', 'emerald', 'teal', 'lime', 'sky', 'slate', 'amber', 'rose', 'orange', 'violet'] as $colorItem)
-                            <option value="{{ $colorItem }}" @selected(old('accent_color', $application->accent_color) === $colorItem)>
-                                {{ ucfirst($colorItem) }}
+                        @php
+                            $colors = [
+                                'brand' => 'Hijau SIPADU',
+                                'emerald' => 'Hijau',
+                                'teal' => 'Toska',
+                                'sky' => 'Biru',
+                                'violet' => 'Ungu',
+                                'rose' => 'Merah',
+                                'amber' => 'Kuning',
+                                'orange' => 'Oranye',
+                                'slate' => 'Abu-abu',
+                            ];
+                        @endphp
+                        @foreach($colors as $value => $label)
+                            <option value="{{ $value }}" @selected(old('accent_color', $application->accent_color) === $value)>
+                                {{ $label }}
                             </option>
                         @endforeach
                     </x-forms.select>
