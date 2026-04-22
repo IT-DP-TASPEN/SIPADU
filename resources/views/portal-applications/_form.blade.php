@@ -103,14 +103,50 @@
 
             <div class="space-y-6">
                 <div>
-                    <x-forms.label for="icon">Icon Aplikasi</x-forms.label>
-                    <x-forms.select id="icon" name="icon">
+                    <x-forms.label for="icon">Preset Icon</x-forms.label>
+                    <p class="mb-3 text-[11px] text-slate-500">Pilih salah satu icon standar di bawah ini.</p>
+                    <div class="grid grid-cols-4 gap-3" id="icon-picker">
                         @foreach(['bank', 'chart', 'shield', 'users', 'support', 'box', 'book', 'document'] as $iconItem)
-                            <option value="{{ $iconItem }}" @selected(old('icon', $application->icon) === $iconItem)>
-                                {{ ucfirst($iconItem) }} Icon
-                            </option>
+                            <label class="relative cursor-pointer group">
+                                <input type="radio" name="icon" value="{{ $iconItem }}" class="peer sr-only" @checked(old('icon', $application->icon) === $iconItem)>
+                                <div class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-white/5 transition peer-checked:border-brand-500 peer-checked:bg-brand-500/20 group-hover:bg-white/10 h-full">
+                                    <div class="text-slate-400 peer-checked:text-brand-400 group-hover:text-white transition">
+                                        @include('portal.partials.app-icon', ['icon' => $iconItem])
+                                    </div>
+                                    <span class="mt-2 text-[10px] text-slate-500 uppercase font-bold peer-checked:text-slate-300">{{ $iconItem }}</span>
+                                </div>
+                            </label>
                         @endforeach
-                    </x-forms.select>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-6 border-t border-white/5">
+                    <x-forms.label for="icon_file">Atau Upload Logo Custom</x-forms.label>
+                    <div class="mt-3">
+                        <div class="relative group">
+                            <input type="file" id="icon_file" name="icon_file" accept="image/png,image/jpeg,image/svg+xml,image/webp" 
+                                   class="block w-full text-sm text-slate-400 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-500/20 file:text-brand-400 hover:file:bg-brand-500/30 file:transition-all transition-all">
+                        </div>
+                        <div class="mt-3 rounded-xl bg-amber-500/5 border border-amber-500/10 p-3">
+                            <p class="text-[11px] leading-relaxed text-amber-200/70">
+                                <strong class="text-amber-400">Rekomendasi:</strong> Gunakan ukuran <span class="text-white font-bold">512x512px</span> (Rasio 1:1) untuk hasil terbaik. <br>
+                                <strong class="text-amber-400">Format:</strong> PNG, JPG, SVG, atau WebP (Maks. 5MB).
+                            </p>
+                        </div>
+                    </div>
+                    
+                    @if($application->isCustomIcon())
+                        <div class="mt-4 flex items-center gap-4 p-4 rounded-2xl bg-brand-500/5 border border-brand-500/20 shadow-lg shadow-brand-500/5">
+                            <div class="h-16 w-16 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center p-2 border border-white/10">
+                                <img src="{{ $application->getIconUrl() }}" alt="Current Logo" class="h-full w-full object-contain">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-xs font-bold text-white uppercase tracking-wider">Logo Custom Aktif</p>
+                                <p class="mt-1 text-[10px] text-brand-300 font-medium">Aplikasi ini menggunakan logo yang diupload.</p>
+                                <p class="text-[10px] text-slate-500 italic mt-1">Pilih preset icon di atas jika ingin menggantinya kembali.</p>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 <div>

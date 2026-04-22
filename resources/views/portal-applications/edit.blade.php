@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('portal-applications.update', $application) }}">
+            <form method="POST" action="{{ route('portal-applications.update', $application) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 

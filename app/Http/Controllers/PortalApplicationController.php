@@ -50,6 +50,8 @@ class PortalApplicationController extends Controller
 
     public function create(): View
     {
+        $maxSortOrder = PortalApplication::max('sort_order') ?? 0;
+
         return view('portal-applications.create', [
             'application' => new PortalApplication([
                 'launch_mode' => 'sso',
@@ -57,6 +59,7 @@ class PortalApplicationController extends Controller
                 'is_frequent' => false,
                 'open_in_new_tab' => true,
                 'sso_enabled' => true,
+                'sort_order' => $maxSortOrder + 1,
             ]),
             'accessRulesText' => '',
             'divisions' => \App\Models\User::distinct()->orderBy('division_name')->pluck('division_name')->filter()->values(),
@@ -117,6 +120,7 @@ class PortalApplicationController extends Controller
             'sso_login_url' => ['nullable', 'url', 'max:255'],
             'badge' => ['nullable', 'string', 'max:255'],
             'icon' => ['nullable', 'string', 'max:255'],
+            'icon_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,svg,webp', 'max:5120'],
             'accent_color' => ['nullable', 'string', 'max:50'],
             'keywords' => ['nullable', 'string'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
@@ -133,7 +137,18 @@ class PortalApplicationController extends Controller
 
         $data['slug'] = $data['slug'] ?: str($data['name'])->slug()->value();
         $data['keywords'] = $this->normalizeKeywords($data['keywords'] ?? '');
-        $data['sort_order'] = $data['sort_order'] ?? 0;
+
+        if ($request->hasFile('icon_file')) {
+            // Delete old icon if it's a custom file
+            if ($application && $application->isCustomIcon()) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($application->icon);
+            }
+            
+            $path = $request->file('icon_file')->store('icons', 'public');
+            $data['icon'] = $path;
+        }
+
+        $data['sort_order'] = $data['sort_order'] ?? (PortalApplication::max('sort_order') + 1);
         $data['is_frequent'] = $request->boolean('is_frequent');
         $data['is_active'] = $request->boolean('is_active', true);
         $data['open_in_new_tab'] = $request->boolean('open_in_new_tab', true);

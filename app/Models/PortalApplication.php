@@ -61,6 +61,24 @@ class PortalApplication extends Model
         ];
     }
 
+    public function getIconUrl(): string|null
+    {
+        if (!$this->icon) {
+            return null;
+        }
+
+        if (str_starts_with($this->icon, 'icons/') || str_starts_with($this->icon, 'http')) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->url($this->icon);
+        }
+
+        return null; // It's a preset icon name
+    }
+
+    public function isCustomIcon(): bool
+    {
+        return $this->icon && (str_starts_with($this->icon, 'icons/') || str_starts_with($this->icon, 'http'));
+    }
+
     public function usesSso(): bool
     {
         return $this->launch_mode === 'sso';

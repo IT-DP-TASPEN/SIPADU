@@ -36,7 +36,7 @@
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('portal-applications.store') }}">
+            <form method="POST" action="{{ route('portal-applications.store') }}" enctype="multipart/form-data">
                 @csrf
                 
                 @include('portal-applications._form', [
