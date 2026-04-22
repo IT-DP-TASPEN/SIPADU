@@ -1,5 +1,5 @@
 @if(str_contains($icon, '/') || str_contains($icon, '.'))
-    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($icon) }}" alt="Icon" class="h-10 w-10 object-contain">
+    <img src="{{ '/storage/' . $icon }}" alt="Icon" class="h-10 w-10 object-contain">
 @else
     @switch($icon)
         @case('bank')

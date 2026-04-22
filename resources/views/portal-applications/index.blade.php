@@ -77,6 +77,8 @@
                     <table class="admin-table min-w-full divide-y divide-white/6">
                         <thead>
                             <tr class="text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                                <th class="px-5 py-4">No</th>
+                                <th class="px-5 py-4">Icon</th>
                                 <th class="px-5 py-4">Aplikasi</th>
                                 <th class="px-5 py-4">Mode</th>
                                 <th class="px-5 py-4">URL</th>
@@ -87,6 +89,14 @@
                         <tbody class="divide-y divide-white/6">
                             @foreach ($applications as $application)
                                 <tr class="text-sm text-slate-300">
+                                    <td class="px-5 py-4">
+                                        <span class="font-bold text-slate-500">#{{ $application->sort_order }}</span>
+                                    </td>
+                                    <td class="px-5 py-4">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-brand-400">
+                                            @include('portal.partials.app-icon', ['icon' => $application->icon])
+                                        </div>
+                                    </td>
                                     <td class="px-5 py-4">
                                         <p class="font-semibold text-white">{{ $application->name }}</p>
                                         <p class="mt-1 text-xs text-slate-500">{{ $application->slug }}</p>
