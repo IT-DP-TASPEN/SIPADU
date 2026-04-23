@@ -133,7 +133,7 @@
                 <div class="mb-5 flex items-end justify-between gap-3">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-300">All Applications</p>
-                        <h3 class="mt-1 text-2xl font-bold text-white">Seluruh aplikasi internal</h3>
+                        <h3 class="mt-1 text-2xl font-bold text-white">Seluruh aplikasi internal ({{ $allApps->count() }})</h3>
                     </div>
                     <p id="all-apps-caption" class="hidden text-sm text-slate-500 sm:block">Gunakan pencarian untuk hasil tercepat, atau pilih dari daftar berikut.</p>
                 </div>
