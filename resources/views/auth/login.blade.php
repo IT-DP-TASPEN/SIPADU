@@ -63,6 +63,12 @@
                         <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-card transition hover:-translate-y-0.5 hover:bg-brand-700">
                             Masuk ke portal
                         </button>
+
+                        <div class="text-center">
+                            <a href="{{ route('forgot-password') }}" class="text-sm font-semibold text-brand-300 transition hover:text-brand-200">
+                                Lupa Password?
+                            </a>
+                        </div>
                     </form>
 
                     <div class="mt-5 space-y-2 text-center text-sm text-slate-500">

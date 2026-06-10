@@ -173,6 +173,10 @@ details[open] summary {
     }
 }
 
+[x-cloak] {
+    display: none !important;
+}
+
 /* Cyberpunk Prose for Article/Content */
 .cyber-prose {
     counter-reset: h2counter;

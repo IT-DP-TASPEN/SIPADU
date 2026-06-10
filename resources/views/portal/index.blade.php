@@ -28,7 +28,16 @@
                     <a href="{{ route('portal-applications.index') }}" class="hidden items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white md:inline-flex">
                         Kelola aplikasi
                     </a>
+                    <a href="{{ route('announcements.index') }}" class="hidden items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white md:inline-flex">
+                        Pengumuman
+                    </a>
+                    <a href="{{ route('audit-logs.index') }}" class="hidden items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white md:inline-flex">
+                        Audit Trail
+                    </a>
                 @endif
+
+                @include('components.notification-bell')
+
                 <details class="relative">
                     <summary class="flex cursor-pointer list-none items-center gap-3 rounded-full border border-white/10 bg-white/5 px-2 py-2 text-left transition hover:border-brand-400/30">
                         <div class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-500/15 text-sm font-bold text-brand-200">
@@ -58,6 +67,14 @@
                             <a href="{{ route('profile.edit') }}" class="flex items-center rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/5 hover:text-white">
                                 Update profil
                             </a>
+                            @if ($user->isAdmin())
+                                <a href="{{ route('announcements.index') }}" class="flex items-center rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/5 hover:text-white md:hidden">
+                                    Pengumuman
+                                </a>
+                                <a href="{{ route('audit-logs.index') }}" class="flex items-center rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/5 hover:text-white md:hidden">
+                                    Audit Trail
+                                </a>
+                            @endif
                             <form id="portal-logout-form" method="POST" action="{{ route('logout') }}" class="hidden">
                                 @csrf
                             </form>

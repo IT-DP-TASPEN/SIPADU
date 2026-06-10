@@ -22,6 +22,12 @@
                     <a href="{{ route('portal-applications.index') }}" class="inline-flex items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white">
                         Kelola aplikasi
                     </a>
+                    <a href="{{ route('announcements.index') }}" class="inline-flex items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white">
+                        Pengumuman
+                    </a>
+                    <a href="{{ route('audit-logs.index') }}" class="inline-flex items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white">
+                        Audit Trail
+                    </a>
                 </div>
             </div>
 
@@ -46,6 +52,41 @@
                     <p class="mt-3 text-3xl font-extrabold text-white">{{ number_format($summary['launches_30d']) }}</p>
                     <p class="mt-2 text-sm text-slate-400">Total event launch terekam untuk monitoring dan audit</p>
                 </article>
+            </section>
+
+            {{-- UAM Monitoring Section --}}
+            <section class="mt-8">
+                <div class="mb-4">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-400">User Access Management</p>
+                    <h2 class="mt-1 text-2xl font-bold text-white">Monitoring Keamanan & Akses</h2>
+                </div>
+                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                    <article class="section-panel rounded-[28px] p-5">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand-300">User Aktif</p>
+                        <p class="mt-3 text-3xl font-extrabold text-white">{{ number_format($uamSummary['total_active']) }}</p>
+                        <p class="mt-2 text-sm text-slate-400">{{ number_format($uamSummary['total_inactive']) }} nonaktif</p>
+                    </article>
+                    <article class="section-panel rounded-[28px] p-5">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-300">Expired / Locked</p>
+                        <p class="mt-3 text-3xl font-extrabold text-white">{{ number_format($uamSummary['total_expired']) }} / {{ number_format($uamSummary['total_locked']) }}</p>
+                        <p class="mt-2 text-sm text-slate-400">Akun kedaluwarsa dan terkunci</p>
+                    </article>
+                    <article class="section-panel rounded-[28px] p-5">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">Password Expired</p>
+                        <p class="mt-3 text-3xl font-extrabold text-white">{{ number_format($uamSummary['password_expired']) }}</p>
+                        <p class="mt-2 text-sm text-slate-400">{{ number_format($uamSummary['password_expiring_soon']) }} akan expired dalam 7 hari</p>
+                    </article>
+                    <article class="section-panel rounded-[28px] p-5">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">Login Hari Ini</p>
+                        <p class="mt-3 text-3xl font-extrabold text-white">{{ number_format($uamSummary['logins_today']) }}</p>
+                        <p class="mt-2 text-sm text-slate-400">{{ number_format($uamSummary['failed_logins_today']) }} login gagal hari ini</p>
+                    </article>
+                    <article class="section-panel rounded-[28px] p-5">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-purple-300">Pengumuman & Notifikasi</p>
+                        <p class="mt-3 text-3xl font-extrabold text-white">{{ number_format($uamSummary['active_announcements']) }}</p>
+                        <p class="mt-2 text-sm text-slate-400">{{ number_format($uamSummary['unread_notifications']) }} notifikasi belum dibaca</p>
+                    </article>
+                </div>
             </section>
 
             <section class="mt-8 grid gap-6 xl:grid-cols-[1.1fr_1fr]">
@@ -172,6 +213,52 @@
                                 <tr>
                                     <td colspan="5" class="px-6 py-10 text-center text-sm text-slate-500">
                                         Belum ada audit trail launch untuk ditampilkan.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            {{-- Recent Audit Logs --}}
+            <section class="section-panel mt-8 overflow-hidden rounded-[30px]">
+                <div class="flex items-end justify-between gap-3 px-6 pt-6">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand-300">Audit Trail</p>
+                        <h2 class="mt-1 text-2xl font-bold text-white">Log aktivitas terbaru</h2>
+                    </div>
+                    <a href="{{ route('audit-logs.index') }}" class="text-sm font-semibold text-brand-300 hover:text-brand-200">Lihat semua</a>
+                </div>
+
+                <div class="mt-5 overflow-x-auto">
+                    <table class="admin-table min-w-full divide-y divide-white/6">
+                        <thead>
+                            <tr class="text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                                <th class="px-6 py-4">Waktu</th>
+                                <th class="px-6 py-4">User</th>
+                                <th class="px-6 py-4">Aktivitas</th>
+                                <th class="px-6 py-4">IP</th>
+                                <th class="px-6 py-4">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/6">
+                            @forelse($recentAuditLogs as $log)
+                                <tr class="text-sm text-slate-300">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs">{{ $log->created_at?->format('d M Y H:i') }}</td>
+                                    <td class="px-6 py-4">
+                                        <p class="font-semibold text-white">{{ $log->user_name ?? '-' }}</p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="rounded-full bg-white/5 px-3 py-1 text-xs font-semibold text-slate-200">{{ $log->activity }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-xs text-slate-400">{{ $log->ip_address ?? '-' }}</td>
+                                    <td class="px-6 py-4 text-xs text-slate-400 max-w-xs truncate">{{ $log->description ?? '-' }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-6 py-10 text-center text-sm text-slate-500">
+                                        Belum ada audit trail.
                                     </td>
                                 </tr>
                             @endforelse

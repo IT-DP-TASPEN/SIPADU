@@ -29,7 +29,31 @@
         <x-forms.input id="password" name="password" type="password" />
         @if(isset($passwordOptional) && $passwordOptional)
             <p class="mt-2 text-xs text-slate-400">Biarkan kosong jika tidak ingin mengganti password.</p>
+        @else
+            <p class="mt-2 text-xs text-slate-400">Minimal 8 karakter, huruf besar, huruf kecil, angka, karakter khusus.</p>
         @endif
+    </div>
+
+    <div>
+        <x-forms.label for="status">Status Akun</x-forms.label>
+        <x-forms.select id="status" name="status">
+            <option value="active" @selected(old('status', $userModel->status ?? 'active') === 'active')>Aktif</option>
+            <option value="inactive" @selected(old('status', $userModel->status) === 'inactive')>Nonaktif</option>
+            <option value="expired" @selected(old('status', $userModel->status) === 'expired')>Expired</option>
+            <option value="locked" @selected(old('status', $userModel->status) === 'locked')>Locked</option>
+        </x-forms.select>
+    </div>
+
+    <div></div>
+
+    <div>
+        <x-forms.label for="active_from">Tanggal Mulai Aktif</x-forms.label>
+        <x-forms.input id="active_from" name="active_from" type="date" value="{{ old('active_from', $userModel->active_from?->format('Y-m-d')) }}" />
+    </div>
+
+    <div>
+        <x-forms.label for="active_until">Tanggal Berakhir Akun</x-forms.label>
+        <x-forms.input id="active_until" name="active_until" type="date" value="{{ old('active_until', $userModel->active_until?->format('Y-m-d')) }}" />
     </div>
 
     <div>

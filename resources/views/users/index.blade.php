@@ -5,9 +5,9 @@
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-300">User Management</p>
                     <h1 class="mt-1 text-3xl font-extrabold tracking-tight text-white">Kelola user SIPADU</h1>
-                    <p class="mt-2 text-sm text-slate-400">Atur data identitas, divisi, jabatan, serta tipe kantor pengguna portal.</p>
+                    <p class="mt-2 text-sm text-slate-400">Atur data identitas, divisi, jabatan, status, serta tipe kantor pengguna portal.</p>
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-wrap gap-3">
                     <a href="{{ route('dashboard.index') }}" class="inline-flex items-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 shadow-sm transition hover:border-brand-400/30 hover:text-white">
                         Dashboard
                     </a>
@@ -32,6 +32,13 @@
             <form method="GET" action="{{ route('users.index') }}" class="section-panel mb-5 rounded-[24px] p-4 shadow-sm">
                 <div class="flex flex-col gap-3 sm:flex-row">
                     <x-forms.input name="q" value="{{ $search }}" placeholder="Cari nama, username, ID karyawan, email, divisi, jabatan..." />
+                    <x-forms.select name="status" class="sm:max-w-[200px]">
+                        <option value="">Semua Status</option>
+                        <option value="active" @selected($statusFilter === 'active')>Aktif</option>
+                        <option value="inactive" @selected($statusFilter === 'inactive')>Nonaktif</option>
+                        <option value="expired" @selected($statusFilter === 'expired')>Expired</option>
+                        <option value="locked" @selected($statusFilter === 'locked')>Locked</option>
+                    </x-forms.select>
                     <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-brand-700">
                         Cari
                     </button>
@@ -44,8 +51,8 @@
                         <thead>
                             <tr class="text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                                 <th class="px-5 py-4">User</th>
+                                <th class="px-5 py-4">Status</th>
                                 <th class="px-5 py-4">Divisi & Jabatan</th>
-                                <th class="px-5 py-4">Lokasi</th>
                                 <th class="px-5 py-4">Kontak</th>
                                 <th class="px-5 py-4 text-right">Aksi</th>
                             </tr>
@@ -56,28 +63,54 @@
                                     <td class="px-5 py-4">
                                         <p class="font-semibold text-white">{{ $user->name }}</p>
                                         <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                                            <span>{{ $user->username }} • {{ $user->employee_id }}</span>
+                                            <span>{{ $user->username }} &bull; {{ $user->employee_id }}</span>
                                             @if ($user->isAdmin())
                                                 <span class="rounded-full bg-brand-400/10 px-2 py-1 font-semibold text-brand-200">Admin</span>
                                             @endif
                                         </div>
+                                        @if($user->must_change_password)
+                                            <p class="mt-1 text-xs text-amber-400">Wajib ganti password</p>
+                                        @endif
+                                    </td>
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex rounded-full border px-3 py-1 text-xs font-semibold {{ $user->statusColor() }}">
+                                            {{ $user->statusLabel() }}
+                                        </span>
+                                        @if($user->active_until)
+                                            <p class="mt-1 text-xs text-slate-500">s/d {{ $user->active_until->format('d M Y') }}</p>
+                                        @endif
+                                        @if($user->login_failure_count > 0)
+                                            <p class="mt-1 text-xs text-rose-400">Gagal login: {{ $user->login_failure_count }}x</p>
+                                        @endif
                                     </td>
                                     <td class="px-5 py-4">
                                         <p>{{ $user->division_name ?: '-' }}</p>
                                         <p class="mt-1 text-xs text-slate-500">{{ $user->title ?: '-' }}</p>
                                     </td>
                                     <td class="px-5 py-4">
-                                        <p>{{ $user->office_type === 'branch' ? 'Cabang' : 'Kantor Pusat' }}</p>
-                                        <p class="mt-1 text-xs text-slate-500">{{ $user->branch_code ?: '-' }} {{ $user->branch_name ?: '' }}</p>
-                                    </td>
-                                    <td class="px-5 py-4">
-                                        <p>{{ $user->email }}</p>
+                                        <p class="text-xs">{{ $user->email }}</p>
                                         <p class="mt-1 text-xs text-slate-500">{{ $user->phone ?: '-' }}</p>
                                     </td>
                                     <td class="px-5 py-4 text-right">
-                                        <a href="{{ route('users.edit', $user) }}" class="inline-flex items-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white">
-                                            Edit
-                                        </a>
+                                        <div class="flex flex-wrap items-center justify-end gap-2">
+                                            <a href="{{ route('users.edit', $user) }}" class="inline-flex items-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-brand-400/30 hover:text-white">
+                                                Edit
+                                            </a>
+                                            <form method="POST" action="{{ route('users.reset-password', $user) }}" onsubmit="return confirm('Reset password user {{ $user->name }}? Password akan diubah menjadi default dan user wajib ganti saat login berikutnya.')">
+                                                @csrf
+                                                <button type="submit" class="inline-flex items-center rounded-xl border border-amber-500/20 bg-amber-500/5 px-3 py-2 text-xs font-semibold text-amber-200 transition hover:bg-amber-500/10">
+                                                    Reset Password
+                                                </button>
+                                            </form>
+                                            @if($user->isLocked())
+                                                <form method="POST" action="{{ route('users.unlock', $user) }}" onsubmit="return confirm('Unlock akun {{ $user->name }}?')">
+                                                    @csrf
+                                                    <button type="submit" class="inline-flex items-center rounded-xl border border-brand-500/20 bg-brand-500/5 px-3 py-2 text-xs font-semibold text-brand-200 transition hover:bg-brand-500/10">
+                                                        Unlock
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

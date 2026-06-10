@@ -1,4 +1,4 @@
-@if (session('status') || session('warning') || session('error'))
+@if (! session('password_changed') && (session('status') || session('warning') || session('error')))
     <div 
         x-data="{ show: true }" 
         x-show="show" 

@@ -18,6 +18,11 @@ class UserSeeder extends Seeder
 
             $user['password'] = \Illuminate\Support\Facades\Hash::make($user['password']);
 
+            // Ferrian is the system admin
+            if (($user['employee_id'] ?? '') === '2907997') {
+                $user['is_admin'] = 1;
+            }
+
             DB::table('users')->updateOrInsert(
                 ['employee_id' => $user['employee_id']],
                 $user,

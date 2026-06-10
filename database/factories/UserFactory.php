@@ -40,6 +40,12 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'last_login_at' => now()->subHours(fake()->numberBetween(1, 48)),
             'remember_token' => Str::random(10),
+            'status' => 'active',
+            'active_from' => now()->subMonths(6),
+            'active_until' => now()->addYear(),
+            'password_changed_at' => now()->subDays(fake()->numberBetween(1, 25)),
+            'must_change_password' => false,
+            'login_failure_count' => 0,
         ];
     }
 

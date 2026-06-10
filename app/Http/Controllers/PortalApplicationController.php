@@ -131,8 +131,7 @@ class PortalApplicationController extends Controller
             'is_frequent' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
             'open_in_new_tab' => ['nullable', 'boolean'],
-            'access_rules' => ['nullable', 'array'],
-            'access_rules.*' => ['string'],
+            'access_rules' => ['nullable'],
         ]);
 
         $data['slug'] = $data['slug'] ?: str($data['name'])->slug()->value();

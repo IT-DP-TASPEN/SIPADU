@@ -107,7 +107,20 @@
                                     <x-forms.input id="password" name="password" type="password" placeholder="••••••••" />
                                     <p class="mt-2 text-xs text-slate-400 italic">Biarkan kosong jika tidak ingin mengganti.</p>
                                 </div>
+                                <div>
+                                    <x-forms.label for="password_confirmation">Konfirmasi Password</x-forms.label>
+                                    <x-forms.input id="password_confirmation" name="password_confirmation" type="password" placeholder="••••••••" />
+                                </div>
                             </div>
+
+                            @if($userModel->password_changed_at)
+                                <div class="mt-4 rounded-2xl bg-white/5 p-3 text-xs text-slate-400">
+                                    Password terakhir diubah: {{ $userModel->password_changed_at->format('d M Y H:i') }}
+                                    @if($userModel->passwordDaysRemaining() !== null)
+                                        &middot; Sisa {{ max(0, $userModel->passwordDaysRemaining()) }} hari
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -163,5 +176,50 @@
             </form>
         </div>
     </main>
+
+    <!-- Hidden logout form -->
+    <form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden">
+        @csrf
+    </form>
+
+    <!-- Password changed confirmation modal -->
+    @if(session('password_changed'))
+    <div 
+        x-data="{ show: true }" 
+        x-show="show" 
+        x-cloak
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+    >
+        <div 
+            x-show="show" 
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-90"
+            x-transition:enter-end="opacity-100 scale-100"
+            class="mx-4 w-full max-w-md overflow-hidden rounded-[32px] border border-amber-500/30 bg-gradient-to-b from-[#1a1f1a] to-[#0d1813] p-1 shadow-[0_0_60px_rgba(251,191,36,0.15)]"
+        >
+            <div class="rounded-[28px] px-8 py-10 text-center">
+                <!-- Warning Icon -->
+                <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-amber-500/20">
+                    <svg class="h-10 w-10 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </div>
+
+                <h3 class="mb-3 text-2xl font-bold text-white">Password Diperbarui</h3>
+                <p class="mb-8 text-base leading-relaxed text-slate-300">
+                    {{ session('warning') }}
+                </p>
+
+                <button 
+                    type="button"
+                    @click="document.getElementById('logout-form').submit()"
+                    class="inline-flex h-14 w-full items-center justify-center rounded-2xl bg-amber-600 px-10 text-base font-bold text-white shadow-[0_0_25px_rgba(251,191,36,0.25)] transition hover:bg-amber-500 hover:shadow-[0_0_35px_rgba(251,191,36,0.4)]"
+                >
+                    OK, Logout Sekarang
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
 </x-layouts.app>
 
