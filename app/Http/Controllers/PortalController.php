@@ -18,7 +18,7 @@ class PortalController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $accessibleApplications = $applications;
+        $accessibleApplications = $applications->filter(fn (PortalApplication $application) => $application->isAccessibleBy($request->user()));
 
         return view('portal.index', [
             'user' => $request->user(),
@@ -35,6 +35,7 @@ class PortalController extends Controller
             ->where('is_active', true)
             ->with('accessRules')
             ->get()
+            ->filter(fn (PortalApplication $application) => $application->isAccessibleBy($request->user()))
             ->map(fn (PortalApplication $application) => [
                 'id' => $application->id,
                 'name' => $application->name,

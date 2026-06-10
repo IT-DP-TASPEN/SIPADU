@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -36,13 +36,23 @@ class ProfileController extends Controller
             'password' => ['nullable', 'string', 'min:8'],
         ]);
 
-        if (! empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
+        $passwordChanged = ! empty($data['password']);
+
+        if (! $passwordChanged) {
             unset($data['password']);
         }
+        // else: let the model's 'hashed' cast auto-hash the password
 
         $user->update($data);
+
+        if ($passwordChanged) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')
+                ->with('status', 'Password berhasil diperbarui. Silakan login kembali menggunakan password baru Anda.');
+        }
 
         return redirect()
             ->route('profile.edit')

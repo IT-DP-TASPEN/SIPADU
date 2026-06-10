@@ -10,7 +10,11 @@ class EnsureUserIsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        abort_unless($request->user()?->isAdmin(), 403);
+        if (! $request->user()?->isAdmin()) {
+            return redirect()
+                ->route('portal.index')
+                ->with('warning', 'Anda tidak memiliki akses ke halaman dashboard.');
+        }
 
         return $next($request);
     }

@@ -40,11 +40,13 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('portal.css') }}">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
     @include('components.cyberpunk-bg')
     <div class="scanline"></div>
     <div class="relative isolate flex-1 flex flex-col">
+        <x-notifications />
         {{ $slot }}
     </div>
     <script src="{{ asset('portal.js') }}"></script>
