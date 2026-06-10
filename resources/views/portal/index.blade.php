@@ -1,5 +1,5 @@
 <x-layouts.app :title="'SIPADU | Portal Terpadu'">
-    <header class="px-4 pt-4 sm:px-6 lg:px-8">
+    <header class="relative z-40 px-4 pt-4 sm:px-6 lg:px-8">
         <div class="glass-panel mx-auto flex max-w-7xl items-center justify-between rounded-[28px] border border-white/8 px-5 py-4 shadow-soft sm:px-6">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-card">
@@ -31,7 +31,7 @@
                         </button>
 
                         <div x-show="open" @click.away="open = false" x-transition
-                            class="glass-panel absolute right-0 z-30 mt-3 w-60 rounded-[20px] border border-white/10 p-2 shadow-soft">
+                            class="glass-panel absolute right-0 z-50 mt-3 w-60 rounded-[20px] border border-white/10 p-2 shadow-soft">
                             <p class="px-4 py-2 text-[11px] font-semibold uppercase tracking-widest text-slate-500">Manajemen</p>
                             <a href="{{ route('users.index') }}" class="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/5 hover:text-white">
                                 <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
@@ -72,7 +72,7 @@
                         </div>
                     </summary>
 
-                    <div class="glass-panel absolute right-0 z-20 mt-3 w-64 rounded-[24px] border border-white/10 p-2 shadow-soft">
+                    <div class="glass-panel absolute right-0 z-50 mt-3 w-64 rounded-[24px] border border-white/10 p-2 shadow-soft">
                         <div class="rounded-[18px] border border-white/8 bg-white/5 px-4 py-3">
                             <p class="text-sm font-semibold text-white">{{ $user->name }}</p>
                             <p class="mt-1 text-xs text-slate-400">{{ $user->division_name ?: $user->unit_name }}</p>

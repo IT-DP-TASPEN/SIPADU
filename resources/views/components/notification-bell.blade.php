@@ -28,7 +28,7 @@
     </button>
 
     <div x-show="open" @click.away="open = false" x-transition
-        class="glass-panel absolute right-0 z-30 mt-3 w-80 rounded-[24px] border border-white/10 p-2 shadow-soft sm:w-96">
+        class="glass-panel absolute right-0 z-50 mt-3 w-80 rounded-[24px] border border-white/10 p-2 shadow-soft sm:w-96">
         <div class="flex items-center justify-between rounded-[18px] border border-white/8 bg-white/5 px-4 py-3">
             <p class="text-sm font-semibold text-white">Notifikasi</p>
             @if($unreadCount > 0)
