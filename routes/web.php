@@ -16,7 +16,7 @@ use App\Http\Controllers\SsoLaunchController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/portal');
+Route::redirect('/', '/login');
 
 Route::get('/panduan/sso', function () {
     return response()->file(public_path('docs/panduan-implementasi-sso-sipadu.html'));
